@@ -11,7 +11,7 @@ int main()
 
 	std::string fileName = "LevelOne.txt";
 
-	game.loadLevel(fileName);
+	game.run();
 
 	system("pause");
 	return 0;
