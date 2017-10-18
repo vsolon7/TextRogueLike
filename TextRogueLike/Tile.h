@@ -9,13 +9,12 @@
 
 struct Tile
 {
-	char sprite;
 
 	Tile::Tile(char s, Enemy *e, int x, int y)
 	{
 		_xPos = x;
 		_yPos = y;
-		sprite = s;
+		_sprite = s;
 		_enemyOnTile = e;
 
 		if (s == EMPTY_TILE)
@@ -40,8 +39,19 @@ struct Tile
 		_empty = e;
 	}
 
+	char getSprite()
+	{
+		return _sprite;
+	}
+
+	void setSprite(char c)
+	{
+		_sprite = c;
+	}
+
 private:
 	Enemy *_enemyOnTile;
 	bool _empty;
 	int _xPos, _yPos;
+	char _sprite;
 };

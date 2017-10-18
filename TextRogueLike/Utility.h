@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 
-namespace IOManager
+namespace Utility
 {
 	static std::vector<std::string> readFile(std::string &fileName)
 	{
@@ -26,5 +26,17 @@ namespace IOManager
 
 		file.close();
 		return fileData;
+	}
+
+	static void setCursor(int x, int y)
+	{
+		HANDLE hOut;
+		COORD Position;
+
+		hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+		Position.X = x;
+		Position.Y = y;
+		SetConsoleCursorPosition(hOut, Position);
 	}
 }

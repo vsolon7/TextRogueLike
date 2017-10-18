@@ -10,9 +10,15 @@ class Level
 public:
 	Level(std::vector<std::string> data, Player *p);
 
+	void printLevelData();
+	std::vector< std::vector<Tile *> > getLevelData();
+	void setTileSprite(int x, int y, char c);
+	bool isComplete();
+
 	~Level();
 
 private:
 	std::vector< std::vector<Tile *> > _levelData;
+	bool _isComplete;
 };
 

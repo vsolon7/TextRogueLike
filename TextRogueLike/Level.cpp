@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Level.h"
 
 Level::Level(std::vector<std::string> data, Player *p)
@@ -24,6 +26,38 @@ Level::Level(std::vector<std::string> data, Player *p)
 		_levelData.push_back(buffer);
 		buffer.clear();
 	}
+
+	_isComplete = false;
+}
+
+void Level::printLevelData()
+{
+	for (int y = 0; y != _levelData.size(); y++)
+	{
+		for (int x = 0; x != _levelData[y].size(); x++)
+		{
+			std::cout << _levelData[y][x]->getSprite();
+		}
+		std::cout << std::endl;
+	}
+	std::string line(_levelData[_levelData.size() - 1].size(), '=');
+	std::string endlines(8, '\n');
+	std::cout << line << endlines << line << std::endl;
+}
+
+std::vector< std::vector<Tile *> > Level::getLevelData()
+{
+	return _levelData;
+}
+
+void Level::setTileSprite(int x, int y, char c)
+{
+	_levelData[y][x]->setSprite(c);
+}
+
+bool Level::isComplete()
+{
+	return _isComplete;
 }
 
 Level::~Level()

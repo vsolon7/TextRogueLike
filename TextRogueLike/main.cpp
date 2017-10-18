@@ -3,13 +3,10 @@
 #include <string>
 
 #include "GameEngine.h"
-#include "IOManager.h"
 
 int main()
 {
 	GameEngine game;
-
-	std::string fileName = "LevelOne.txt";
 
 	game.run();
 
