@@ -10,11 +10,11 @@ GameEngine::GameEngine()
 
 void GameEngine::_printLevel()
 {
-	std::vector< std::vector<Tile *> > tempLvl = _currLevel->getLevelData();
+	std::vector< std::vector<Tile *> > tempLvl = _getCameraPos();
 
-	for (int y = 0; y != tempLvl.size(); y++)
+	for (unsigned int y = 0; y != tempLvl.size(); y++)
 	{
-		for (int x = 0; x != tempLvl[y].size(); x++)
+		for (unsigned int x = 0; x != tempLvl[y].size(); x++)
 		{
 			std::cout << tempLvl[y][x]->getSprite();
 		}
@@ -22,8 +22,8 @@ void GameEngine::_printLevel()
 	}
 
 	//this is for the box that holds the statuses
-	std::string line(tempLvl[tempLvl.size() - 1].size(), '=');
-	std::string endlines(8, '\n');
+	std::string line(CAMERA_WIDTH, '=');
+	std::string endlines(7, '\n');
 	std::cout << line << endlines << line << std::endl;
 }
 
@@ -37,14 +37,44 @@ void GameEngine::_gameLoop()
 		while (!_currLevel->isComplete())
 		{
 			_printLevel();
-			_processInput();
 			_updateStatuses();
-
+			_processInput();
 
 			Utility::setCursor(0, 0);
+			//Utility::clearScreen();
 			_frame++;
 		}
 	}
+}
+
+std::vector< std::vector<Tile *> > GameEngine::_getCameraPos()
+{
+	int startX = _player->getCurrX() - CAMERA_WIDTH / 2;
+	int startY = _player->getCurrY() - CAMERA_HEIGHT / 2;
+
+	std::vector<std::vector<Tile *> > tempLvl = _currLevel->getLevelData();
+
+		if (startX < 0)
+			startX = 0;
+		if (startY < 0)
+			startY = 0;
+		if (startX > (signed int) tempLvl[startY].size() - CAMERA_WIDTH)
+			startX = tempLvl[startY].size() - CAMERA_WIDTH;
+		if (startY > (signed int) tempLvl.size() - CAMERA_HEIGHT)
+			startY = tempLvl.size() - CAMERA_HEIGHT;
+
+
+	std::vector< std::vector<Tile *> > camera(CAMERA_HEIGHT);
+
+	for (unsigned int y = 0; y < camera.size(); y++)
+	{
+		for (unsigned int x = 0; x < CAMERA_WIDTH; x++)
+		{
+			camera[y].push_back(tempLvl[startY + y][startX + x]);
+		}
+	}
+
+	return camera;
 }
 
 void GameEngine::run()
@@ -69,9 +99,9 @@ void GameEngine::_deleteCurrLevel()
 	std::vector< std::vector<Tile *> > tempLvl = _currLevel->getLevelData();
 
 	//delete all the tiles allocated on the heap
-	for (int y = 0; y < tempLvl.size(); y++)
+	for (unsigned int y = 0; y < tempLvl.size(); y++)
 	{
-		for (int x = 0; x < tempLvl.size(); x++)
+		for (unsigned int x = 0; x < tempLvl.size(); x++)
 		{
 			delete tempLvl[y][x];
 		}
@@ -177,13 +207,13 @@ void GameEngine::_updateStatuses()
 		return;
 
 	//loop through all the statuses
-	for (int i = 0; i < _statuses.size(); i++)
+	for (unsigned int i = 0; i < _statuses.size(); i++)
 	{
 		//if the status has existed for its specified length
 		if (_frame - _statuses[i]->frameCreated > _statuses[i]->frameTime)
 		{
 			//set the cursor to the beginning of the status
-			Utility::setCursor(0, _statuses[i]->position + _currLevel->getLevelData().size() + 1);
+			Utility::setCursor(0, _statuses[i]->position + CAMERA_HEIGHT + 1);
 
 			//print out a bunch of spaces to "clear" the message
 			std::string spaces(_statuses[i]->message.size(), ' ');
@@ -199,7 +229,7 @@ void GameEngine::_updateStatuses()
 		{
 			//if the status was created but hasn't been printed to the screen yet
 			//set the cursor below the screen based on the position of the status
-			Utility::setCursor(0, _statuses[i]->position + _currLevel->getLevelData().size() + 1);
+			Utility::setCursor(0, _statuses[i]->position + CAMERA_HEIGHT + 1);
 
 			//print the message and set the status to has been printed
 			std::cout << _statuses[i]->message;

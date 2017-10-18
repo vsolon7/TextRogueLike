@@ -6,6 +6,9 @@
 #include "Player.h"
 #include "StatusInfo.h"
 
+#define CAMERA_WIDTH 30
+#define CAMERA_HEIGHT 15
+
 enum class GAMESTATE
 {
 	EXIT, PAUSE, INVENTORY, NORMAL
@@ -65,5 +68,9 @@ private:
 
 	//prints the level to the screen!
 	void _printLevel();
+
+	//this will return a vector of tiles that the player can see, as they move 
+	//it will (hopefully) move along the level with them!
+	std::vector< std::vector<Tile *> > _getCameraPos();
 };
 
