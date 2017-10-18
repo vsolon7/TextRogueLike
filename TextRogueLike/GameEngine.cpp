@@ -4,11 +4,6 @@
 #include "GameEngine.h"
 #include "Utility.h"
 
-#define MOVE_UP 0
-#define MOVE_DOWN 1
-#define MOVE_LEFT 2
-#define MOVE_RIGHT 3
-
 GameEngine::GameEngine()
 {
 }
@@ -36,7 +31,6 @@ void GameEngine::run()
 	_gamestate = GAMESTATE::NORMAL;
 	std::string filePath = "LevelOne.txt";
 	_player = new Player(0, 0);
-	_player->setCurrPos(0, 0);
 
 	_loadLevel(filePath, _player);
 	_gameLoop();
