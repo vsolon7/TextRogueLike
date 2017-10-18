@@ -1,23 +1,28 @@
 #pragma once
 #include "Enemy.h"
 
-#define WALL_TILE '#'
-#define EMPTY_TILE ' '
-#define PLAYER_TILE '@'
-#define	ZOMBIE_TILE 'Z'
-#define	ORC_TILE 'O'
+enum class TYPE
+{
+	WALL = 254,
+	EMPTY = ' ', 
+	PLAYER, 
+	ORC = 'O', ZOMBIE = 'Z', SNAKE = 'S',  
+	TRAP,
+	LOCKED_DOOR = '%'
+};
 
 struct Tile
 {
 
-	Tile::Tile(char s, Enemy *e, int x, int y)
+	Tile::Tile(char s, Enemy *e, int x, int y, TYPE t)
 	{
 		_xPos = x;
 		_yPos = y;
 		_sprite = s;
 		_enemyOnTile = e;
+		type = t;
 
-		if (s == EMPTY_TILE)
+		if (t == TYPE::EMPTY)
 			_empty = true;
 		else
 			_empty = false;
@@ -51,7 +56,7 @@ struct Tile
 		//sets the tiles sprite to the parameter
 		//if it is being set to EMPTY_TILE, set the tile as empty
 		_sprite = c;
-		if (c == EMPTY_TILE)
+		if (c == (char) TYPE::EMPTY)
 			_empty = true;
 		else
 			_empty = false;
@@ -62,5 +67,5 @@ private:
 	bool _empty;
 	int _xPos, _yPos;
 	char _sprite;
-
+	TYPE type;
 };

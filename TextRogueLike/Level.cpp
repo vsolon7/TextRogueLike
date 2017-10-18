@@ -14,14 +14,18 @@ Level::Level(std::vector<std::string> data, Player *p)
 			switch (data[y][x])
 			{
 			case '.':
-				buffer.push_back(new Tile(EMPTY_TILE, nullptr, x, y));
+				buffer.push_back(new Tile( (char) TYPE::EMPTY, nullptr, x, y, TYPE::EMPTY));
 				break;
 			case '@':
-				buffer.push_back(new Tile(p->getSprite(), nullptr, x, y));
+				buffer.push_back(new Tile(p->getSprite(), nullptr, x, y, TYPE::PLAYER));
 				p->setCurrPos(x, y);
 				break;
 			case '#':
-				buffer.push_back(new Tile(WALL_TILE, nullptr, x, y));
+				buffer.push_back(new Tile( (char) TYPE::WALL, nullptr, x, y, TYPE::WALL));
+				break;
+			case '%':
+				buffer.push_back(new Tile( (char) TYPE::LOCKED_DOOR, nullptr, x, y, TYPE::LOCKED_DOOR));
+				break;
 			}
 		}
 		_levelData.push_back(buffer);

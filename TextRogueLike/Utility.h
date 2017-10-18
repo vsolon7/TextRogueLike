@@ -10,6 +10,15 @@
 
 namespace Utility
 {
+	static const char straightHor = 205;
+	static const char straightVert = 186;
+	static const char topLeftCorn = 201;
+	static const char topRightCorn = 187;
+	static const char botLeftCorn = 200;
+	static const char botRightCorn = 188;
+	static const char lineOutLeft = 185;
+	static const char lineOutRight = 204;
+
 	//reads a level and returns the vector of strings!
 	static std::vector<std::string> readFile(std::string &fileName)
 	{
@@ -46,44 +55,20 @@ namespace Utility
 		SetConsoleCursorPosition(hOut, Position);
 	}
 
-	static void clearScreen()
+	static void hideCursor()
 	{
-		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-		COORD coordScreen = { 0, 0 };    /* here's where we'll home the
-											cursor */
-		BOOL bSuccess;
-		DWORD cCharsWritten;
-		CONSOLE_SCREEN_BUFFER_INFO csbi; /* to get buffer info */
-		DWORD dwConSize;                 /* number of character cells in
-											the current buffer */
+		HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+		CONSOLE_CURSOR_INFO info;
+		info.dwSize = 100;
+		info.bVisible = FALSE;
+		SetConsoleCursorInfo(consoleHandle, &info);
+	}
 
-											/* get the number of character cells in the current buffer */
-
-		bSuccess = GetConsoleScreenBufferInfo(hConsole, &csbi);
-		PERR(bSuccess, "GetConsoleScreenBufferInfo");
-		dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
-
-		/* fill the entire screen with blanks */
-
-		bSuccess = FillConsoleOutputCharacter(hConsole, (TCHAR) ' ',
-			dwConSize, coordScreen, &cCharsWritten);
-		PERR(bSuccess, "FillConsoleOutputCharacter");
-
-		/* get the current text attribute */
-
-		bSuccess = GetConsoleScreenBufferInfo(hConsole, &csbi);
-		PERR(bSuccess, "ConsoleScreenBufferInfo");
-
-		/* now set the buffer's attributes accordingly */
-
-		bSuccess = FillConsoleOutputAttribute(hConsole, csbi.wAttributes,
-			dwConSize, coordScreen, &cCharsWritten);
-		PERR(bSuccess, "FillConsoleOutputAttribute");
-
-		/* put the cursor at (0, 0) */
-
-		bSuccess = SetConsoleCursorPosition(hConsole, coordScreen);
-		PERR(bSuccess, "SetConsoleCursorPosition");
-		return;
+	static void printCodePage()
+	{
+		for (int i = 0; i < 256; i++)
+		{
+			std::cout << i << ": " << (char)i << "\n";
+		}
 	}
 }

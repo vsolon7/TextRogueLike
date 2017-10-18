@@ -3,7 +3,7 @@
 #define PLAYER_DEFAULT_DAMAGE 5
 #define PLAYER_DEFAULT_HP 40
 #define PLAYER_DEFAULT_ARMOR 1
-#define PLAYER_DEFAULT_SPRITE '@'
+#define PLAYER_DEFAULT_SPRITE (char) 233
 
 //basically just a huge struct of a player. should probably be a class tbh. will change in the future
 struct Player

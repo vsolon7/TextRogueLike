@@ -5,9 +5,11 @@
 #include "Level.h"
 #include "Player.h"
 #include "StatusInfo.h"
+#include "Camera.h"
 
-#define CAMERA_WIDTH 30
-#define CAMERA_HEIGHT 15
+#define BOX_WIDTH 60
+#define BOX_HEIGHT 28
+#define STATUS_HEIGHT 7
 
 enum class GAMESTATE
 {
@@ -42,11 +44,19 @@ private:
 	//the current gamestate of the game
 	GAMESTATE _gamestate;
 
+	//the camera!
+	Camera _camera;
+
 	//statuses are little messages that pop up below the game that will say info.
 	std::vector<StatusInfo *> _statuses;
 
 	//the "frame" we are on. more like the turn. the length statuses exist is based off of this.
 	int _frame;
+
+
+	
+	//draws a box for the game
+	void _drawBox();
 
 	//the main gameloop!
 	void _gameLoop();
@@ -68,9 +78,5 @@ private:
 
 	//prints the level to the screen!
 	void _printLevel();
-
-	//this will return a vector of tiles that the player can see, as they move 
-	//it will (hopefully) move along the level with them!
-	std::vector< std::vector<Tile *> > _getCameraPos();
 };
 
