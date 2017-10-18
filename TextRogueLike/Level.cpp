@@ -6,6 +6,7 @@ Level::Level(std::vector<std::string> data, Player *p)
 {
 	std::vector<Tile *> buffer;
 
+	//loads the level into _levelData based on the data in the file
 	for (int y = 0; y < data.size(); y++)
 	{
 		for (int x = 0; x < data[y].size(); x++)
@@ -28,21 +29,6 @@ Level::Level(std::vector<std::string> data, Player *p)
 	}
 
 	_isComplete = false;
-}
-
-void Level::printLevelData()
-{
-	for (int y = 0; y != _levelData.size(); y++)
-	{
-		for (int x = 0; x != _levelData[y].size(); x++)
-		{
-			std::cout << _levelData[y][x]->getSprite();
-		}
-		std::cout << std::endl;
-	}
-	std::string line(_levelData[_levelData.size() - 1].size(), '=');
-	std::string endlines(8, '\n');
-	std::cout << line << endlines << line << std::endl;
 }
 
 std::vector< std::vector<Tile *> > Level::getLevelData()

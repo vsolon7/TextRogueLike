@@ -29,11 +29,13 @@ struct Tile
 		return _enemyOnTile;
 	}
 
+	//returns true if the tile is empty
 	bool Tile::isEmpty()
 	{
 		return _empty;
 	}
 
+	//set whether the tile is empty
 	void Tile::setEmpty(bool e)
 	{
 		_empty = e;
@@ -46,7 +48,13 @@ struct Tile
 
 	void setSprite(char c)
 	{
+		//sets the tiles sprite to the parameter
+		//if it is being set to EMPTY_TILE, set the tile as empty
 		_sprite = c;
+		if (c == EMPTY_TILE)
+			_empty = true;
+		else
+			_empty = false;
 	}
 
 private:
@@ -54,4 +62,5 @@ private:
 	bool _empty;
 	int _xPos, _yPos;
 	char _sprite;
+
 };

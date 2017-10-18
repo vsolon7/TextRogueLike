@@ -5,6 +5,7 @@
 #define PLAYER_DEFAULT_ARMOR 1
 #define PLAYER_DEFAULT_SPRITE '@'
 
+//basically just a huge struct of a player. should probably be a class tbh. will change in the future
 struct Player
 {
 public:

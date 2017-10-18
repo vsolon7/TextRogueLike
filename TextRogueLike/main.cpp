@@ -6,10 +6,9 @@
 
 int main()
 {
+	//create a game and run it!
 	GameEngine game;
-
 	game.run();
 
-	system("pause");
 	return 0;
 }
