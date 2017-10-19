@@ -1,5 +1,6 @@
 #include <conio.h>
 #include <Windows.h>
+#include <time.h>
 
 #include "GameEngine.h"
 #include "Utility.h"
@@ -80,6 +81,7 @@ void GameEngine::_gameLoop()
 		{
 			_printLevel();
 			_updateStatuses();
+			_updateEnemies();
 			_processInput();
 
 			Utility::setCursor(0, 0);
@@ -91,20 +93,22 @@ void GameEngine::_gameLoop()
 
 void GameEngine::run()
 {
+	Utility::randEngine.seed(time(nullptr));
+
 	//set the gamestate to normal
 	_gamestate = GAMESTATE::NORMAL;
 	std::string filePath = "LevelOne.txt";
 
 	//create a new player, load the first level, and go into gameloop!
 	_player = new Player(0, 0);
-	_loadLevel(filePath, _player);
+	_loadLevel(filePath, _enemies);
 	_camera.init(_player);
 	_gameLoop();
 }
 
-void GameEngine::_loadLevel(std::string &filePath, Player *p)
+void GameEngine::_loadLevel(std::string &filePath, std::vector<Enemy *> &e)
 {
-	_currLevel = new Level(Utility::readFile(filePath), p);
+	_currLevel = new Level(Utility::readFile(filePath), _player, e);
 }
 
 void GameEngine::_deleteCurrLevel()
@@ -121,6 +125,20 @@ void GameEngine::_deleteCurrLevel()
 	}
 	//delete the level
 	delete _currLevel;
+}
+
+void GameEngine::_deleteEnemies()
+{
+	for (int i = 0; i != _enemies.size(); i++)
+	{
+		delete _enemies[i];
+	}
+}
+
+void GameEngine::_updateEnemies()
+{
+	for (int i = 0; i != _enemies.size(); i++)
+		_enemies[i]->idleMove(_currLevel, _player);
 }
 
 Player * GameEngine::getPlayer()
@@ -277,7 +295,7 @@ void GameEngine::_updateStatuses()
 		_statuses.erase(_statuses.begin());
 
 
-		for (int i = 0; i < _statuses.size(); i++)
+		for (unsigned int i = 0; i < _statuses.size(); i++)
 			_statuses[i]->position--;
 	}
 

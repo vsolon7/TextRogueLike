@@ -51,7 +51,7 @@ std::vector< std::vector<Tile *> > Camera::getCameraView(Level *l, EFFECTS e)
 
 	for (unsigned int y = 0; y < camera.size(); y++)
 	{
-		for (unsigned int x = 0; x < _actualViewWidth; x++)
+		for (int x = 0; x < _actualViewWidth; x++)
 		{
 			camera[y].push_back(tempLvl[startY + y][startX + x]);
 		}

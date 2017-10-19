@@ -1,15 +1,16 @@
 #include <iostream>
 
 #include "Level.h"
+#include "Snake.h"
 
-Level::Level(std::vector<std::string> data, Player *p)
+Level::Level(std::vector<std::string> data, Player *p, std::vector<Enemy *> &e)
 {
 	std::vector<Tile *> buffer;
 
 	//loads the level into _levelData based on the data in the file
-	for (int y = 0; y < data.size(); y++)
+	for (unsigned int y = 0; y < data.size(); y++)
 	{
-		for (int x = 0; x < data[y].size(); x++)
+		for (unsigned int x = 0; x < data[y].size(); x++)
 		{
 			switch (data[y][x])
 			{
@@ -25,6 +26,14 @@ Level::Level(std::vector<std::string> data, Player *p)
 				break;
 			case '%':
 				buffer.push_back(new Tile( (char) TYPE::LOCKED_DOOR, nullptr, x, y, TYPE::LOCKED_DOOR));
+				break;
+			case 'S':
+				buffer.push_back(new Tile((char)TYPE::SNAKE, nullptr, x, y, TYPE::ENEMY));
+				e.push_back(new Snake(x, y));
+				break;
+			case 'E':
+				buffer.push_back(new Tile('X', nullptr, x, y, TYPE::ENEMY));
+				e.push_back(new Enemy(x, y));
 				break;
 			}
 		}

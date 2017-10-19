@@ -10,14 +10,16 @@
 
 namespace Utility
 {
-	static const char straightHor = 205;
-	static const char straightVert = 186;
-	static const char topLeftCorn = 201;
-	static const char topRightCorn = 187;
-	static const char botLeftCorn = 200;
-	static const char botRightCorn = 188;
-	static const char lineOutLeft = 185;
-	static const char lineOutRight = 204;
+	static unsigned char straightHor = 205;
+	static unsigned char straightVert = 186;
+	static unsigned char topLeftCorn = 201;
+	static unsigned char topRightCorn = 187;
+	static unsigned char botLeftCorn = 200;
+	static unsigned char botRightCorn = 188;
+	static unsigned char lineOutLeft = 185;
+	static unsigned char lineOutRight = 204;
+
+	static std::mt19937 randEngine;
 
 	//reads a level and returns the vector of strings!
 	static std::vector<std::string> readFile(std::string &fileName)
@@ -70,5 +72,15 @@ namespace Utility
 		{
 			std::cout << i << ": " << (char)i << "\n";
 		}
+	}
+
+	static double fastInvSqrt(float x)
+	{
+		float xhalf = 0.5f*x;
+		int i = *(int*)&x;
+		i = 0x5f3759df - (i >> 1);
+		x = *(float*)&i;
+		x = x*(1.5f - xhalf*x*x);
+		return x;
 	}
 }
