@@ -11,7 +11,7 @@ public:
 	Level(std::vector<std::string> data, Player *p, std::vector<Enemy *> &e);
 
 	std::vector< std::vector<Tile *> > getLevelData();
-	void setTileSprite(int x, int y, char c);
+	void setTileSprite(int x, int y, char c, TYPE t);
 	bool isComplete();
 
 	~Level();

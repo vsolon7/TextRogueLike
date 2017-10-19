@@ -9,7 +9,7 @@ enum class TYPE
 	WALL = 254,
 	EMPTY = ' ',
 	PLAYER,
-	ENEMY,
+	ENEMY = '?',
 	ORC = 'O', ZOMBIE = 'Z', SNAKE = 'S',
 	TRAP,
 	LOCKED_DOOR = '%'
@@ -17,13 +17,14 @@ enum class TYPE
 
 struct Tile
 {
+
 	Tile::Tile(char s, Enemy *e, int x, int y, TYPE t)
 	{
 		_xPos = x;
 		_yPos = y;
 		_sprite = s;
 		_enemyOnTile = e;
-		type = t;
+		_type = t;
 
 		if (t == TYPE::EMPTY)
 			_empty = true;
@@ -54,7 +55,7 @@ struct Tile
 		return _sprite;
 	}
 
-	void setSprite(char c)
+	void setSprite(char c, TYPE t)
 	{
 		//sets the tiles sprite to the parameter
 		//if it is being set to EMPTY_TILE, set the tile as empty
@@ -66,10 +67,15 @@ struct Tile
 		}
 		else
 			_empty = false;
+		_type = t;
 	}
 	void setEnemyOnTile(Enemy *e)
 	{
 		_enemyOnTile = e;
+	}
+	TYPE getType()
+	{
+		return _type;
 	}
 
 private:
@@ -77,5 +83,5 @@ private:
 	bool _empty;
 	int _xPos, _yPos;
 	char _sprite;
-	TYPE type;
+	TYPE _type;
 };

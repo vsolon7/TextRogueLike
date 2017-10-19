@@ -1,6 +1,7 @@
 #include <conio.h>
 #include <Windows.h>
 #include <time.h>
+#include <iomanip>
 
 #include "GameEngine.h"
 #include "Utility.h"
@@ -11,12 +12,29 @@ GameEngine::GameEngine()
 
 void GameEngine::_drawBox()
 {
+	//create some lines of standard sizes
 	std::string line(BOX_WIDTH, Utility::straightHor);
+	std::string hpLine(HP_WIDTH, Utility::straightHor);
 
-	std::cout << Utility::topLeftCorn << line << Utility::topRightCorn << std::endl;
+	//print top of the box
+	std::cout << Utility::topLeftCorn << line << Utility::lineOutBot << hpLine << Utility::topRightCorn << std::endl;
 
 	for (int x = 0; x != BOX_HEIGHT; x++)
 	{
+
+		//draw HP BOX
+		if (x < HP_HEIGHT)
+		{
+			Utility::setCursor(BOX_WIDTH + HP_WIDTH + 2, x + 1);
+			std::cout << Utility::straightVert;
+		}
+		if (x == HP_HEIGHT + 1)
+		{
+			Utility::setCursor(BOX_WIDTH + 1, x);
+			std::cout << Utility::lineOutRight << hpLine << Utility::botRightCorn;
+		}
+
+		//draw the regular box
 		Utility::setCursor(0, x + 1);
 		std::cout << Utility::straightVert;
 		Utility::setCursor(BOX_WIDTH + 1, x + 1);
@@ -25,6 +43,7 @@ void GameEngine::_drawBox()
 	Utility::setCursor(0, BOX_HEIGHT + 1);
 	std::cout << Utility::lineOutRight << line << Utility::lineOutLeft << std::endl;
 
+	//draw the status box
 	for (int x = 0; x != STATUS_HEIGHT; x++)
 	{
 		Utility::setCursor(0, x + BOX_HEIGHT + 2);
@@ -38,20 +57,25 @@ void GameEngine::_drawBox()
 
 void GameEngine::_printLevel()
 {
+	//don't show the cursor
 	Utility::hideCursor();
 
 	_drawBox();
 
+	//get the cameras view to draw
 	std::vector< std::vector<Tile *> > view = _camera.getCameraView(_currLevel);
 
+	//offsets to center it
 	int vertOffSet = (BOX_HEIGHT - _camera.getViewHeight()) / 2;
 	int horOffSet = (BOX_WIDTH - _camera.getViewWidth()) / 2;
 
+	//a line the width of the camera, its standard this way and based off your vision radius
 	std::string line(_camera.getViewWidth(), Utility::straightHor);
 
 	Utility::setCursor(horOffSet, vertOffSet);
 	std::cout << Utility::topLeftCorn << line << Utility::topRightCorn;
 
+	//draw Level
 	for (unsigned int y = 0; y != view.size(); y++)
 	{
 		Utility::setCursor(horOffSet, y + vertOffSet + 1);
@@ -65,6 +89,16 @@ void GameEngine::_printLevel()
 		
 		std::cout << std::endl;
 	}
+
+	//print out some players stats
+	Utility::setCursor(BOX_WIDTH + 2, 1);
+	std::cout << " HP: " << _player->getCurrHP() << " / " << _player->getMaxHP();
+	Utility::setCursor(BOX_WIDTH + 2, 2);
+	std::cout << " DAMAGE: " << _player->getDamage();
+	Utility::setCursor(BOX_WIDTH + 2, 3);
+	std::cout << " ARMOR: " << _player->getArmor();
+	Utility::setCursor(BOX_WIDTH + 2, 4);
+	std::cout << " DMG REDUC: " << std::setprecision(3) << 100 * _player->getDamageReduc() << "%";
 
 	Utility::setCursor(horOffSet, vertOffSet + _camera.getViewHeight() + 1);
 	std::cout << Utility::botLeftCorn << line << Utility::botRightCorn;
@@ -93,7 +127,7 @@ void GameEngine::_gameLoop()
 
 void GameEngine::run()
 {
-	Utility::randEngine.seed(time(nullptr));
+	Utility::randEngine.seed((unsigned int) time(nullptr));
 
 	//set the gamestate to normal
 	_gamestate = GAMESTATE::NORMAL;
@@ -129,6 +163,7 @@ void GameEngine::_deleteCurrLevel()
 
 void GameEngine::_deleteEnemies()
 {
+	//delete all the enemies in a level to avoid memory leaks, this will happen when loading a new level
 	for (int i = 0; i != _enemies.size(); i++)
 	{
 		delete _enemies[i];
@@ -138,7 +173,17 @@ void GameEngine::_deleteEnemies()
 void GameEngine::_updateEnemies()
 {
 	for (int i = 0; i != _enemies.size(); i++)
-		_enemies[i]->idleMove(_currLevel, _player);
+	{
+		//if they're dead, kill and delete them.
+		if (_enemies[i]->getCurrHP() < 0)
+		{
+			_currLevel->setTileSprite(_enemies[i]->getCurrX(), _enemies[i]->getCurrY(), (char)TYPE::EMPTY, TYPE::EMPTY);
+			delete _enemies[i];
+			_enemies.erase(_enemies.begin() + i);
+		}
+		//otherwise move them
+		_enemies[i]->idleMove(_currLevel, _player, _statuses);
+	}
 }
 
 Player * GameEngine::getPlayer()
@@ -177,140 +222,107 @@ void GameEngine::_movePlayer(DIR dir)
 	//set their position to the new tile they want to move to
 	//set the tile they are now in to PLAYER_TILE
 	//
-	//if the tile is NOT empty, display a status saying they can't move there.
+	//if the tile is NOT empty, display a status based on what's there.
 
 	std::vector< std::vector<Tile *> > tempLvl = _currLevel->getLevelData();
 	int playerX = _player->getCurrX();
 	int playerY = _player->getCurrY();
+	int playerMoveX = 0;
+	int playerMoveY = 0;
 
 	switch (dir)
 	{
 	case DIR::UP:
-		if (tempLvl[playerY - 1][playerX]->isEmpty())
-		{
-			_currLevel->setTileSprite(playerX, playerY, (char)TYPE::EMPTY);
-			_player->setCurrPos(playerX, playerY - 1);
-			_currLevel->setTileSprite(_player->getCurrX(), _player->getCurrY(), _player->getSprite());
-		}
-		else
-		{
-			Tile *t = tempLvl[playerY - 1][playerX];
-			switch (t->getSprite())
-			{
-			case (char) TYPE::LOCKED_DOOR:
-				_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, _frame, "You don't have the key", _statuses.size()));
-				break;
-			default:
-				_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, _frame, "You can't move there!", _statuses.size()));
-				break;
-			}
-		}
+		playerMoveX = 0;
+		playerMoveY = -1;
 		break;
 	case DIR::DOWN:
-		if (tempLvl[playerY + 1][playerX]->isEmpty())
-		{
-			_currLevel->setTileSprite(playerX, playerY, (char) TYPE::EMPTY);
-			_player->setCurrPos(playerX, playerY + 1);
-			_currLevel->setTileSprite(_player->getCurrX(), _player->getCurrY(), _player->getSprite());
-		}
-		else
-		{
-			Tile *t = tempLvl[playerY + 1][playerX];
-			switch (t->getSprite())
-			{
-			case (char) TYPE::LOCKED_DOOR:
-				_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, _frame, "You don't have the key", _statuses.size()));
-				break;
-			default:
-				_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, _frame, "You can't move there!", _statuses.size()));
-				break;
-			}
-		}
+		playerMoveX = 0;
+		playerMoveY = 1;
 		break;
 	case DIR::LEFT:
-		if (tempLvl[playerY][playerX - 1]->isEmpty())
-		{
-			_currLevel->setTileSprite(playerX, playerY, (char)TYPE::EMPTY);
-			_player->setCurrPos(playerX - 1, playerY);
-			_currLevel->setTileSprite(_player->getCurrX(), _player->getCurrY(), _player->getSprite());
-		}
-		else
-		{
-			Tile *t = tempLvl[playerY][playerX - 1];
-			switch (t->getSprite())
-			{
-			case (char)TYPE::LOCKED_DOOR:
-				_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, _frame, "You don't have the key", _statuses.size()));
-				break;
-			default:
-				_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, _frame, "You can't move there!", _statuses.size()));
-				break;
-			}
-		}
+		playerMoveX = -1;
+		playerMoveY = 0;
 		break;
 	case DIR::RIGHT:
-		if (tempLvl[playerY][playerX + 1]->isEmpty())
-		{
-			_currLevel->setTileSprite(playerX, playerY, (char)TYPE::EMPTY);
-			_player->setCurrPos(playerX + 1, playerY);
-			_currLevel->setTileSprite(_player->getCurrX(), _player->getCurrY(), _player->getSprite());
-		}
-		else
-		{
-			Tile *t = tempLvl[playerY][playerX + 1];
-			switch (t->getSprite())
-			{
-			case (char)TYPE::LOCKED_DOOR:
-				_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, _frame, "You don't have the key", _statuses.size()));
-				break;
-			default:
-				_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, _frame, "You can't move there!", _statuses.size()));
-				break;
-			}
-		}
+		playerMoveX = 1;
+		playerMoveY = 0;
 		break;
+	}
+
+	if (tempLvl[playerY + playerMoveY][playerX + playerMoveX]->isEmpty())
+	{
+		_currLevel->setTileSprite(playerX, playerY, (char)TYPE::EMPTY, TYPE::EMPTY);
+		_player->setCurrPos(playerX + playerMoveX, playerY + playerMoveY);
+		_currLevel->setTileSprite(_player->getCurrX(), _player->getCurrY(), _player->getSprite(), TYPE::PLAYER);
+	}
+	else
+	{
+		Tile *t = tempLvl[playerY + playerMoveY][playerX + playerMoveX];
+		switch (t->getType())
+		{
+		case TYPE::LOCKED_DOOR:
+			_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, "You don't have the key", _statuses.size()));
+			break;
+		case TYPE::ENEMY:
+			Enemy *e = t->getEnemyOnTile();
+			double tentDamage = _player->getDamage() * (1 - e->getDamageReduc());
+			
+			int intDamage = (int) std::round(tentDamage);
+
+			e->increaseCurrHP(-intDamage);
+
+			break;
+		}
 	}
 }
 
 void GameEngine::_updateStatuses()
 {
+	//once there are 8 statuses, we start deleting the oldest ones!
+
 	//if there are no statuses, do nothing
 	if (_statuses.size() == 0)
 		return;
 
-	//if the status has existed for its specified length
+	//if there are more than 7 statuses
 	if (_statuses.size() > 7)
 	{
-		//set the cursor to the beginning of the status
-		Utility::setCursor(1, _statuses[0]->position + BOX_HEIGHT + 2);
-
-		//print out a bunch of spaces to "clear" the message
-		std::string spaces(BOX_WIDTH, ' ');
-		std::cout << spaces;
-
-		//delete it (it was allocated on the heap)
-		delete _statuses[0];
-
-		//erase it from the vector
-		_statuses.erase(_statuses.begin());
-
-
+		//this is needed so if you get a huge flood of them, there will always only be 7.
+		//O(n^2) tho :(, however the second for loop just shifts a position down by one, not that computationally taxing
 		for (unsigned int i = 0; i < _statuses.size(); i++)
-			_statuses[i]->position--;
+		{
+			if (_statuses.size() <= 7)
+				break;
+
+			//set the cursor to the beginning of the status
+			Utility::setCursor(1, _statuses[0]->position + BOX_HEIGHT + 2);
+
+			//print out a bunch of spaces to "clear" the message
+			std::string spaces(BOX_WIDTH, ' ');
+			std::cout << spaces;
+
+			//delete it (it was allocated on the heap)
+			delete _statuses[0];
+
+			//erase it from the vector
+			_statuses.erase(_statuses.begin());
+
+
+			for (unsigned int i = 0; i < _statuses.size(); i++)
+				_statuses[i]->position--;
+		}
 	}
 
 	//loop through all the statuses
 	for (unsigned int i = 0; i < _statuses.size(); i++)
 	{
-		//if the status was created but hasn't been printed to the screen yet
-		//set the cursor to the side of the screen based on the position of the status
 		Utility::setCursor(1, _statuses[i]->position + BOX_HEIGHT + 2);
 
 		std::string extraBuffer(BOX_WIDTH - _statuses[i]->message.size(), ' ');
 
-		//print the message and set the status to has been printed
+		//prints out all the statuses
 		std::cout << _statuses[i]->message << extraBuffer;
-		_statuses[i]->printed = true;
 	}
 }
 

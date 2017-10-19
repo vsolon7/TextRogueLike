@@ -15,10 +15,22 @@ Enemy::Enemy(int x, int y)
 	_currHP = 1;
 	_damage = 0;
 	_armor = 0;
-	_viewDistance = 3;
+	_viewDistance = 0;
 	_currX = x;
 	_currY = y;
 }
+
+Enemy::Enemy(int x, int y, int hp, int d, int a, int view)
+{
+	_maxHP = hp;
+	_currHP = hp;
+	_damage = d;
+	_armor = a;
+	_viewDistance = view;
+	_currX = x;
+	_currY = y;
+}
+
 //GETTERS AND SETTERS
 int Enemy::getMaxHP()
 {
@@ -35,6 +47,10 @@ int Enemy::getDamage()
 int Enemy::getArmor()
 {
 	return _armor;
+}
+double Enemy::getDamageReduc()
+{
+	return (double) (_armor) / (10 + _armor);
 }
 int Enemy::getCurrX()
 {
@@ -55,6 +71,17 @@ void Enemy::setMaxHP(int hp)
 void Enemy::setCurrHP(int hp)
 {
 	_currHP = hp;
+}
+void Enemy::increaseCurrHP(int hp)
+{
+	if (_currHP + hp > _maxHP)
+	{
+		_currHP = _maxHP;
+	}
+	else
+	{
+		_currHP += hp;
+	}
 }
 void Enemy::setDamage(int d) 
 {
@@ -83,44 +110,54 @@ double Enemy::getDistance(int x1, int y1, int x2, int y2)
 	return distance;
 }
 
-void Enemy::idleMove(Level *l, Player *p)
+void Enemy::idleMove(Level *l, Player *p, std::vector<StatusInfo *> &s)
 {
 	int playerX = p->getCurrX();
 	int playerY = p->getCurrY();
 
-	double dist = getDistance(_currX, _currY, playerX, playerY);
+	_distFromPlayer = getDistance(_currX, _currY, playerX, playerY);
 
-	if ((int)dist <= _viewDistance)
+	if ((int)_distFromPlayer <= _viewDistance)
 	{
-		attack(l, p);
+		attack(l, p, s);
 	}
 	else
 	{
 		std::uniform_int_distribution<int> rand(-1, 1);
 		int xDir = rand(Utility::randEngine);
 		int yDir = rand(Utility::randEngine);
-		move(l, xDir, yDir);
+		move(l, p, xDir, yDir, s);
 	}
 }
 
-void Enemy::move(Level *l, int x, int y) 
+void Enemy::move(Level *l, Player *p, int x, int y, std::vector<StatusInfo *> &s)
 {
 	std::vector< std::vector<Tile *> > tempLvl = l->getLevelData();
 
 	if (tempLvl[_currY + y][_currX + x]->isEmpty())
 	{
-		l->setTileSprite(_currX, _currY, (char)TYPE::EMPTY);
+		l->setTileSprite(_currX, _currY, (char)TYPE::EMPTY, TYPE::EMPTY);
 		_currX += x;
 		_currY += y;
-		l->setTileSprite(_currX, _currY, 'X');
+		l->setTileSprite(_currX, _currY, (char)TYPE::ENEMY, TYPE::ENEMY);
 		tempLvl[_currY][_currX]->setEnemyOnTile(this);
+	}
+	else if (_distFromPlayer < SQRT_2)
+	{
+		double tentDamage = _damage * (1 - p->getDamageReduc());
+
+		int intDamage = (int)std::round(tentDamage);
+
+		s.push_back(new StatusInfo(STATUSTYPE::BATTLE, "The <enemy> attacks you!", s.size()));
+
+		p->increaseCurrHP(-intDamage);
 	}
 	else
 	{
 		return;
 	}
 }
-void Enemy::attack(Level *l, Player *p)
+void Enemy::attack(Level *l, Player *p, std::vector<StatusInfo *> &s)
 {
 	int playerX = p->getCurrX();
 	int playerY = p->getCurrY();
@@ -139,10 +176,10 @@ void Enemy::attack(Level *l, Player *p)
 		switch (movingPositive)
 		{
 		case true:
-			move(l, 1, 0);
+			move(l, p, 1, 0, s);
 			break;
 		case false:
-			move(l, -1, 0);
+			move(l, p, -1, 0, s);
 			break;
 		}
 
@@ -153,10 +190,10 @@ void Enemy::attack(Level *l, Player *p)
 		switch (movingPositive)
 		{
 		case true:
-			move(l, 0, 1);
+			move(l, p, 0, 1, s);
 			break;
 		case false:
-			move(l, 0, -1);
+			move(l, p, 0, -1, s);
 			break;
 		}
 

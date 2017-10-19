@@ -32,7 +32,7 @@ Level::Level(std::vector<std::string> data, Player *p, std::vector<Enemy *> &e)
 				e.push_back(new Snake(x, y));
 				break;
 			case 'E':
-				buffer.push_back(new Tile('X', nullptr, x, y, TYPE::ENEMY));
+				buffer.push_back(new Tile((char) TYPE::ENEMY, nullptr, x, y, TYPE::ENEMY));
 				e.push_back(new Enemy(x, y));
 				break;
 			}
@@ -49,9 +49,9 @@ std::vector< std::vector<Tile *> > Level::getLevelData()
 	return _levelData;
 }
 
-void Level::setTileSprite(int x, int y, char c)
+void Level::setTileSprite(int x, int y, char c, TYPE t)
 {
-	_levelData[y][x]->setSprite(c);
+	_levelData[y][x]->setSprite(c, t);
 }
 
 bool Level::isComplete()

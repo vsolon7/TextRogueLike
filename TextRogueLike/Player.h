@@ -5,6 +5,8 @@
 #define PLAYER_DEFAULT_ARMOR 1
 #define PLAYER_DEFAULT_SPRITE (char) 233
 
+//armor formula ( x / (10 + x) )
+
 //basically just a huge struct of a player. should probably be a class tbh. will change in the future
 struct Player
 {
@@ -18,6 +20,16 @@ public:
 		_currX = x;
 		_currY = y;
 		_sprite = PLAYER_DEFAULT_SPRITE;
+	}
+
+	int Player::getMaxHP()
+	{
+		return _maxHP;
+	}
+
+	double Player::getDamageReduc()
+	{
+		return (double) (_armor) / (10 + _armor);
 	}
 
 	void Player::increaseMaxHP(int hp)

@@ -18,6 +18,8 @@ namespace Utility
 	static unsigned char botRightCorn = 188;
 	static unsigned char lineOutLeft = 185;
 	static unsigned char lineOutRight = 204;
+	static unsigned char lineOutTop = 202;
+	static unsigned char lineOutBot = 203;
 
 	static std::mt19937 randEngine;
 

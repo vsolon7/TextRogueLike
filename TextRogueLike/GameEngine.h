@@ -10,6 +10,8 @@
 
 #define BOX_WIDTH 60
 #define BOX_HEIGHT 28
+#define HP_WIDTH 20
+#define HP_HEIGHT 4
 #define STATUS_HEIGHT 7
 
 enum class GAMESTATE
