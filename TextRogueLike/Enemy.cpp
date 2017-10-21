@@ -105,7 +105,7 @@ void Enemy::setViewDistance(int v)
 double Enemy::getDistance(int x1, int y1, int x2, int y2)
 {
 	//the the QUAKEIII fast inv square root is faster than the compiler optimized one. for some reason.
-	double distance = 1 / Utility::fastInvSqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)));
+	double distance = 1 / Utility::fastInvSqrt((float)((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)));
 
 	return distance;
 }
@@ -136,10 +136,10 @@ void Enemy::move(Level *l, Player *p, int x, int y, std::vector<StatusInfo *> &s
 
 	if (tempLvl[_currY + y][_currX + x]->isEmpty())
 	{
-		l->setTileSprite(_currX, _currY, (char)TYPE::EMPTY, TYPE::EMPTY);
+		l->setTileSprite(_currX, _currY, (char)TILE::EMPTY, TYPE::EMPTY);
 		_currX += x;
 		_currY += y;
-		l->setTileSprite(_currX, _currY, (char)TYPE::ENEMY, TYPE::ENEMY);
+		l->setTileSprite(_currX, _currY, (char)TILE::ENEMY, TYPE::ENEMY);
 		tempLvl[_currY][_currX]->setEnemyOnTile(this);
 	}
 	else if (_distFromPlayer < SQRT_2)

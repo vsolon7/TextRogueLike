@@ -177,7 +177,7 @@ void GameEngine::_updateEnemies()
 		//if they're dead, kill and delete them.
 		if (_enemies[i]->getCurrHP() < 0)
 		{
-			_currLevel->setTileSprite(_enemies[i]->getCurrX(), _enemies[i]->getCurrY(), (char)TYPE::EMPTY, TYPE::EMPTY);
+			_currLevel->setTileSprite(_enemies[i]->getCurrX(), _enemies[i]->getCurrY(), (char)TILE::EMPTY, TYPE::EMPTY);
 			delete _enemies[i];
 			_enemies.erase(_enemies.begin() + i);
 		}
@@ -252,7 +252,7 @@ void GameEngine::_movePlayer(DIR dir)
 
 	if (tempLvl[playerY + playerMoveY][playerX + playerMoveX]->isEmpty())
 	{
-		_currLevel->setTileSprite(playerX, playerY, (char)TYPE::EMPTY, TYPE::EMPTY);
+		_currLevel->setTileSprite(playerX, playerY, (char)TILE::EMPTY, TYPE::EMPTY);
 		_player->setCurrPos(playerX + playerMoveX, playerY + playerMoveY);
 		_currLevel->setTileSprite(_player->getCurrX(), _player->getCurrY(), _player->getSprite(), TYPE::PLAYER);
 	}
@@ -271,6 +271,8 @@ void GameEngine::_movePlayer(DIR dir)
 			int intDamage = (int) std::round(tentDamage);
 
 			e->increaseCurrHP(-intDamage);
+
+			_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, "You attack for " + std::to_string(intDamage) + " damage", _statuses.size()));
 
 			break;
 		}

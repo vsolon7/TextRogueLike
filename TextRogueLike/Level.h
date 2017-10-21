@@ -5,6 +5,10 @@
 #include "Tile.h"
 #include "Player.h"
 
+class Enemy;
+class Tile;
+enum class TYPE;
+
 class Level
 {
 public:

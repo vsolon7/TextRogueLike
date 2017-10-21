@@ -8,88 +8,27 @@
 //armor formula ( x / (10 + x) )
 
 //basically just a huge struct of a player. should probably be a class tbh. will change in the future
-struct Player
+class Player
 {
 public:
-	Player::Player(int x, int y)
-	{
-		_maxHP = PLAYER_DEFAULT_HP;
-		_currHP = _maxHP;
-		_damage = PLAYER_DEFAULT_DAMAGE;
-		_armor = PLAYER_DEFAULT_ARMOR;
-		_currX = x;
-		_currY = y;
-		_sprite = PLAYER_DEFAULT_SPRITE;
-	}
+	Player(int x, int y);
+	~Player();
 
-	int Player::getMaxHP()
-	{
-		return _maxHP;
-	}
-
-	double Player::getDamageReduc()
-	{
-		return (double) (_armor) / (10 + _armor);
-	}
-
-	void Player::increaseMaxHP(int hp)
-	{
-		_maxHP += hp;
-	}
-
-	void Player::increaseCurrHP(int hp)
-	{
-		if (hp > _maxHP)
-			_currHP = _maxHP;
-		else
-			_currHP += hp;
-	}
-
-	int Player::getCurrHP()
-	{
-		return _currHP;
-	}
-
-	void Player::increaseDamage(int d)
-	{
-		_damage += d;
-	}
-
-	int Player::getDamage()
-	{
-		return _damage;
-	}
-
-	void Player::increaseArmor(int a)
-	{
-		_armor += a;
-	}
-
-	int Player::getArmor()
-	{
-		return _armor;
-	}
-
-	void Player::setCurrPos(int x, int y)
-	{
-		_currX = x;
-		_currY = y;
-	}
-
-	int Player::getCurrX()
-	{
-		return _currX;
-	}
-
-	int Player::getCurrY()
-	{
-		return _currY;
-	}
-
-	char Player::getSprite()
-	{
-		return _sprite;
-	}
+	//GETTERS AND SETTERS
+	int getMaxHP();
+	double getDamageReduc();
+	void increaseMaxHP(int hp);
+	void increaseCurrHP(int hp);
+	int getCurrHP();
+	void increaseDamage(int d);
+	int getDamage();
+	void increaseArmor(int a);
+	int getArmor();
+	void setCurrPos(int x, int y);
+	int getCurrX();
+	int getCurrY();
+	char getSprite();
+	//END GETTERS AND SETTERS
 
 private:
 	int _currHP;

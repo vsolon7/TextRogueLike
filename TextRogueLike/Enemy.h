@@ -7,7 +7,7 @@
 #define SQRT_2 1.414213
 
 class Level;
-struct Player;
+class Player;
 
 //generic enemy class, other enemies inhereit from this
 

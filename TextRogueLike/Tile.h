@@ -4,7 +4,7 @@
 
 class Enemy;
 
-enum class TYPE
+enum class TILE
 {
 	WALL = 254,
 	EMPTY = ' ',
@@ -15,68 +15,39 @@ enum class TYPE
 	LOCKED_DOOR = '%'
 };
 
-struct Tile
+enum class TYPE
 {
+	WALL,
+	EMPTY,
+	PLAYER,
+	ENEMY,
+	TRAP,
+	LOCKED_DOOR
+};
 
-	Tile::Tile(char s, Enemy *e, int x, int y, TYPE t)
-	{
-		_xPos = x;
-		_yPos = y;
-		_sprite = s;
-		_enemyOnTile = e;
-		_type = t;
+class Tile
+{
+public:
 
-		if (t == TYPE::EMPTY)
-			_empty = true;
-		else
-			_empty = false;
-	}
+	Tile(char s, Enemy *e, int x, int y, TYPE t);
+	~Tile();
 
 	//returns the enemy occupying the tile, if any
-	Enemy * Tile::getEnemyOnTile()
-	{
-		return _enemyOnTile;
-	}
+	Enemy * getEnemyOnTile();
 
 	//returns true if the tile is empty
-	bool Tile::isEmpty()
-	{
-		return _empty;
-	}
+	bool isEmpty();
 
 	//set whether the tile is empty
-	void Tile::setEmpty(bool e)
-	{
-		_empty = e;
-	}
+	void setEmpty(bool e);
 
-	char getSprite()
-	{
-		return _sprite;
-	}
+	char getSprite();
 
-	void setSprite(char c, TYPE t)
-	{
-		//sets the tiles sprite to the parameter
-		//if it is being set to EMPTY_TILE, set the tile as empty
-		_sprite = c;
-		if (c == (char)TYPE::EMPTY)
-		{
-			_enemyOnTile = nullptr;
-			_empty = true;
-		}
-		else
-			_empty = false;
-		_type = t;
-	}
-	void setEnemyOnTile(Enemy *e)
-	{
-		_enemyOnTile = e;
-	}
-	TYPE getType()
-	{
-		return _type;
-	}
+	void setSprite(char c, TYPE t);
+
+	void setEnemyOnTile(Enemy *e);
+
+	TYPE getType();
 
 private:
 	Enemy *_enemyOnTile;

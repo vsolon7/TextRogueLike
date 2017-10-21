@@ -31,10 +31,10 @@ void Snake::move(Level *l, Player *p, int x, int y, std::vector<StatusInfo *> &s
 
 	if (tempLvl[_currY + y][_currX + x]->isEmpty())
 	{
-		l->setTileSprite(_currX, _currY, (char)TYPE::EMPTY, TYPE::EMPTY);
+		l->setTileSprite(_currX, _currY, (char)TILE::EMPTY, TYPE::EMPTY);
 		_currX += x;
 		_currY += y;
-		l->setTileSprite(_currX, _currY, (char)TYPE::SNAKE, TYPE::ENEMY);
+		l->setTileSprite(_currX, _currY, (char)TILE::SNAKE, TYPE::ENEMY);
 		tempLvl[_currY][_currX]->setEnemyOnTile(this);
 	}
 	//if they're close enough to attack, aka 1 square away, not including diagonals
