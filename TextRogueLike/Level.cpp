@@ -35,6 +35,12 @@ Level::Level(std::vector<std::string> data, Player *p, std::vector<Enemy *> &e)
 				buffer.push_back(new Tile((char) TILE::ENEMY, nullptr, x, y, TYPE::ENEMY));
 				e.push_back(new Enemy(x, y));
 				break;
+			case '/':
+				buffer.push_back(new Tile((char)TILE::DOOR, nullptr, x, y, TYPE::DOOR));
+				break;
+			case 'c':
+				buffer.push_back(new Tile((char)TILE::CHEST, nullptr, x, y, TYPE::CHEST));
+				break;
 			}
 		}
 		_levelData.push_back(buffer);

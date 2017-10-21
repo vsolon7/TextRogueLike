@@ -85,8 +85,8 @@ void GameEngine::_printLevel()
 		{
 			std::cout << view[y][x]->getSprite() << ' ';
 		}
+
 		std::cout << Utility::straightVert;
-		
 		std::cout << std::endl;
 	}
 
@@ -264,6 +264,14 @@ void GameEngine::_movePlayer(DIR dir)
 		case TYPE::LOCKED_DOOR:
 			_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, "You don't have the key", _statuses.size()));
 			break;
+		case TYPE::DOOR:
+			_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, "You open the door", _statuses.size()));
+
+			_currLevel->setTileSprite(playerX, playerY, (char)TILE::EMPTY, TYPE::EMPTY);
+			_player->setCurrPos(playerX + playerMoveX, playerY + playerMoveY);
+			_currLevel->setTileSprite(_player->getCurrX(), _player->getCurrY(), _player->getSprite(), TYPE::PLAYER);
+
+			break;
 		case TYPE::ENEMY:
 			Enemy *e = t->getEnemyOnTile();
 			double tentDamage = _player->getDamage() * (1 - e->getDamageReduc());
@@ -273,7 +281,6 @@ void GameEngine::_movePlayer(DIR dir)
 			e->increaseCurrHP(-intDamage);
 
 			_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, "You attack for " + std::to_string(intDamage) + " damage", _statuses.size()));
-
 			break;
 		}
 	}

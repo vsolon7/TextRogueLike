@@ -12,7 +12,8 @@ enum class TILE
 	ENEMY = '?',
 	ORC = 'O', ZOMBIE = 'Z', SNAKE = 'S',
 	TRAP,
-	LOCKED_DOOR = '%'
+	LOCKED_DOOR = '%', DOOR = '/',
+	CHEST = 'c'
 };
 
 enum class TYPE
@@ -22,7 +23,8 @@ enum class TYPE
 	PLAYER,
 	ENEMY,
 	TRAP,
-	LOCKED_DOOR
+	LOCKED_DOOR, DOOR,
+	CHEST
 };
 
 class Tile

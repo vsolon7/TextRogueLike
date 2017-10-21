@@ -38,7 +38,7 @@ void Snake::move(Level *l, Player *p, int x, int y, std::vector<StatusInfo *> &s
 		tempLvl[_currY][_currX]->setEnemyOnTile(this);
 	}
 	//if they're close enough to attack, aka 1 square away, not including diagonals
-	else if (_distFromPlayer < SQRT_2)
+	if (_distFromPlayer < SQRT_2)
 	{
 		double tentDamage = _damage * (1 - p->getDamageReduc());
 

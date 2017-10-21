@@ -159,6 +159,8 @@ void Enemy::move(Level *l, Player *p, int x, int y, std::vector<StatusInfo *> &s
 }
 void Enemy::attack(Level *l, Player *p, std::vector<StatusInfo *> &s)
 {
+	std::vector< std::vector<Tile *> > tempLvl = l->getLevelData();
+
 	int playerX = p->getCurrX();
 	int playerY = p->getCurrY();
 	int xDist = abs(playerX - _currX);
@@ -167,33 +169,82 @@ void Enemy::attack(Level *l, Player *p, std::vector<StatusInfo *> &s)
 	bool movingHoriz = (xDist > yDist) ? true : false;
 	bool movingPositive = false;
 
+	int moveX = 0;
+	int moveY = 0;
+
 	//find which axis is the farthest and move along that one
+	//this will ensure it's always as close to the player as possible
 	switch (movingHoriz)
 	{
 	case true:
 		movingPositive = (_currX < playerX) ? true : false;
 
+		//the AI to attack the player
+		//if the square it's trying to move to is occupied by something other than the player,
+		//flip move along the opposite axis (flips moveX and moveY in the function call.
+		//prob the coolest code i've written
 		switch (movingPositive)
 		{
 		case true:
-			move(l, p, 1, 0, s);
+			
+			moveX++;
+
+			if (!(tempLvl[moveY + _currY][moveX + _currX]->isEmpty()) && (tempLvl[moveY + _currY][moveX + _currX]->getType() != TYPE::PLAYER))
+			{
+				move(l, p, moveY, moveX, s);
+			}
+			else
+			{
+				move(l, p, moveX, moveY, s);
+			}
 			break;
 		case false:
-			move(l, p, -1, 0, s);
+
+			moveX--;
+
+			if (!(tempLvl[moveY + _currY][moveX + _currX]->isEmpty()) && (tempLvl[moveY + _currY][moveX + _currX]->getType() != TYPE::PLAYER))
+			{
+				move(l, p, moveY, moveX, s);
+			}
+			else
+			{
+				move(l, p, moveX, moveY, s);
+			}
 			break;
 		}
 
 		break;
+
 	case false:
 		movingPositive = (_currY < playerY) ? true : false;
 
 		switch (movingPositive)
 		{
 		case true:
-			move(l, p, 0, 1, s);
+
+			moveY++;
+
+			if (!(tempLvl[moveY + _currY][moveX + _currX]->isEmpty()) && (tempLvl[moveY + _currY][moveX + _currX]->getType() != TYPE::PLAYER))
+			{
+				move(l, p, moveY, moveX, s);
+			}
+			else
+			{
+				move(l, p, moveX, moveY, s);
+			}
 			break;
 		case false:
-			move(l, p, 0, -1, s);
+
+			moveY--;
+
+			if (!(tempLvl[moveY + _currY][moveX + _currX]->isEmpty()) && (tempLvl[moveY + _currY][moveX + _currX]->getType() != TYPE::PLAYER))
+			{
+				move(l, p, moveY, moveX, s);
+			}
+			else
+			{
+				move(l, p, moveX, moveY, s);
+			}
 			break;
 		}
 
