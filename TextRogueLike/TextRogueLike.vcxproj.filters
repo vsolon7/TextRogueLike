@@ -28,6 +28,9 @@
     <Filter Include="Source Files\Level">
       <UniqueIdentifier>{14a64497-ded4-4151-a11a-12ca75b784cd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utility\LinkedList">
+      <UniqueIdentifier>{7bdf4b2d-2ee8-42fa-bdd2-549e3c33bb00}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -53,6 +56,9 @@
     </ClCompile>
     <ClCompile Include="Tile.cpp">
       <Filter>Source Files\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="LinkedList.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +88,15 @@
     </ClInclude>
     <ClInclude Include="Snake.h">
       <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedList.h">
+      <Filter>Header Files\Utility\LinkedList</Filter>
+    </ClInclude>
+    <ClInclude Include="LLNode.h">
+      <Filter>Header Files\Utility\LinkedList</Filter>
+    </ClInclude>
+    <ClInclude Include="Error.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@
 #include "Level.h"
 #include "Snake.h"
 
-Level::Level(std::vector<std::string> data, Player *p, std::vector<Enemy *> &e)
+Level::Level(std::vector<std::string> data, Player *p, LinkedList<Enemy *> &e)
 {
 	std::vector<Tile *> buffer;
 
@@ -29,11 +29,11 @@ Level::Level(std::vector<std::string> data, Player *p, std::vector<Enemy *> &e)
 				break;
 			case 'S':
 				buffer.push_back(new Tile((char)TILE::SNAKE, nullptr, x, y, TYPE::ENEMY));
-				e.push_back(new Snake(x, y));
+				e.pushBack(new Snake(x, y));
 				break;
 			case 'E':
 				buffer.push_back(new Tile((char) TILE::ENEMY, nullptr, x, y, TYPE::ENEMY));
-				e.push_back(new Enemy(x, y));
+				e.pushBack(new Enemy(x, y));
 				break;
 			case '/':
 				buffer.push_back(new Tile((char)TILE::DOOR, nullptr, x, y, TYPE::DOOR));

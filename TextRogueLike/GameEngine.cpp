@@ -6,6 +6,9 @@
 #include "GameEngine.h"
 #include "Utility.h"
 
+template <typename T>
+class LinkedList;
+
 GameEngine::GameEngine()
 {
 }
@@ -135,12 +138,15 @@ void GameEngine::run()
 
 	//create a new player, load the first level, and go into gameloop!
 	_player = new Player(0, 0);
+
 	_loadLevel(filePath, _enemies);
+
+	//_loadLevel(filePath, _enemies);
 	_camera.init(_player);
 	_gameLoop();
 }
 
-void GameEngine::_loadLevel(std::string &filePath, std::vector<Enemy *> &e)
+void GameEngine::_loadLevel(std::string &filePath, LinkedList<Enemy *> &e)
 {
 	_currLevel = new Level(Utility::readFile(filePath), _player, e);
 }
@@ -164,26 +170,49 @@ void GameEngine::_deleteCurrLevel()
 void GameEngine::_deleteEnemies()
 {
 	//delete all the enemies in a level to avoid memory leaks, this will happen when loading a new level
-	for (int i = 0; i != _enemies.size(); i++)
+	for (LLNode<Enemy *> *it = _enemies.getBeg(); it->nextNode != nullptr; it = it->nextNode)
 	{
-		delete _enemies[i];
+		delete it->data;
+		delete it;
 	}
 }
 
 void GameEngine::_updateEnemies()
 {
-	for (int i = 0; i != _enemies.size(); i++)
+	int pos = 0;
+
+	LLNode<Enemy *> *it = _enemies.getBeg();
+
+	while (it->nextNode != nullptr)
 	{
-		//if they're dead, kill and delete them.
-		if (_enemies[i]->getCurrHP() < 0)
+		if (it->data->getCurrHP() < 0)
 		{
-			_currLevel->setTileSprite(_enemies[i]->getCurrX(), _enemies[i]->getCurrY(), (char)TILE::EMPTY, TYPE::EMPTY);
-			delete _enemies[i];
-			_enemies.erase(_enemies.begin() + i);
+			_currLevel->setTileSprite(it->data->getCurrX(), it->data->getCurrY(), (char)TILE::EMPTY, TYPE::EMPTY);
+			delete it->data;
+			it = it->nextNode;
+			_enemies.deleteNode(pos);
+			pos++;
 		}
-		//otherwise move them
-		_enemies[i]->idleMove(_currLevel, _player, _statuses);
+		else
+		{
+			it->data->idleMove(_currLevel, _player, _statuses);
+			it = it->nextNode;
+		}
+		pos++;
 	}
+
+	//for (int i = 0; i != _enemies.size(); i++)
+	//{
+	//	//if they're dead, kill and delete them.
+	//	if (_enemies[i]->getCurrHP() < 0)
+	//	{
+	//		_currLevel->setTileSprite(_enemies[i]->getCurrX(), _enemies[i]->getCurrY(), (char)TILE::EMPTY, TYPE::EMPTY);
+	//		delete _enemies[i];
+	//		_enemies.erase(_enemies.begin() + i);
+	//	}
+	//	//otherwise move them
+	//	_enemies[i]->idleMove(_currLevel, _player, _statuses);
+	//}
 }
 
 Player * GameEngine::getPlayer()

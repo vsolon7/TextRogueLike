@@ -116,6 +116,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="LinkedList.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Snake.cpp" />
@@ -124,7 +125,10 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Error.h" />
     <ClInclude Include="GameEngine.h" />
+    <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="LLNode.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Level.h" />

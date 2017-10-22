@@ -1,8 +1,8 @@
 #pragma once
 #include <random>
 
-#include "Level.h"
 #include "StatusInfo.h"
+#include "Level.h"
 
 #define SQRT_2 1.414213
 

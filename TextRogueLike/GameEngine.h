@@ -4,6 +4,7 @@
 
 #include "Snake.h"
 #include "Level.h"
+#include "Snake.h"
 #include "Player.h"
 #include "StatusInfo.h"
 #include "Camera.h"
@@ -44,7 +45,7 @@ private:
 	//the player
 	Player *_player;
 
-	std::vector<Enemy *> _enemies;
+	LinkedList<Enemy *> _enemies;
 
 	//the current gamestate of the game
 	GAMESTATE _gamestate;
@@ -67,7 +68,7 @@ private:
 	void _gameLoop();
 
 	//load a level into the game, takes the filepath and the player
-	void _loadLevel(std::string &filePath, std::vector<Enemy *> &e);
+	void _loadLevel(std::string &filePath, LinkedList<Enemy *> &e);
 
 	//deletes the level and all it's tiles allocated on the heap
 	void _deleteCurrLevel();

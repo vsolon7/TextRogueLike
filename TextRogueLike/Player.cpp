@@ -1,6 +1,5 @@
 #include "Player.h"
 
-
 Player::Player(int x, int y)
 {
 	_maxHP = PLAYER_DEFAULT_HP;
