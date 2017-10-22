@@ -75,6 +75,11 @@ int Player::getCurrY()
 	return _currY;
 }
 
+void Player::setSprite(char c)
+{
+	_sprite = c;
+}
+
 char Player::getSprite()
 {
 	return _sprite;

@@ -31,6 +31,9 @@
     <Filter Include="Header Files\Utility\LinkedList">
       <UniqueIdentifier>{7bdf4b2d-2ee8-42fa-bdd2-549e3c33bb00}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utility">
+      <UniqueIdentifier>{ce182b5d-b7ce-4d1a-9484-5c70ffb31c79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -58,7 +61,7 @@
       <Filter>Source Files\Level</Filter>
     </ClCompile>
     <ClCompile Include="LinkedList.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Utility.h"
 
 Camera::Camera()
 {
@@ -6,6 +7,9 @@ Camera::Camera()
 
 void Camera::init(Player *p)
 {
+	//have one tile for noise, saves me from memory leaks and also don't have to delete tons
+	_noiseTile = new Tile((char)TILE::NOISE, nullptr, NULL, NULL, TYPE::NOISE);
+
 	_player = p;
 }
 
@@ -45,15 +49,34 @@ std::vector< std::vector<Tile *> > Camera::getCameraView(Level *l, EFFECTS e)
 	if (startY >(signed int) tempLvl.size() - _actualViewHeight)
 		startY = tempLvl.size() - _actualViewHeight;
 
-
 	//load the visible part of the level into the camera.
 	std::vector< std::vector<Tile *> > camera(_actualViewHeight);
+
+	int playerCurrX = _player->getCurrX();
+	int playerCurrY = _player->getCurrY();
 
 	for (unsigned int y = 0; y < camera.size(); y++)
 	{
 		for (int x = 0; x < _actualViewWidth; x++)
 		{
-			camera[y].push_back(tempLvl[startY + y][startX + x]);
+			//if the noise effect is applied, obfuscate random tiles with noise!
+			if (e == EFFECTS::NOISE && x != playerCurrX - startX && y != playerCurrY - startY)
+			{
+				int chance = (int)EFFECTS::NOISE;
+				std::uniform_int_distribution<int> noiseRoll(0, 100);
+
+				int roll = noiseRoll(Utility::randEngine);
+
+				if (roll <= chance)
+				{
+					camera[y].push_back(_noiseTile);
+				}
+				else
+					camera[y].push_back(tempLvl[startY + y][startX + x]);
+
+			}
+			else
+				camera[y].push_back(tempLvl[startY + y][startX + x]);
 		}
 	}
 

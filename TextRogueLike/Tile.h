@@ -8,12 +8,12 @@ enum class TILE
 {
 	WALL = 254,
 	EMPTY = ' ',
-	PLAYER,
 	ENEMY = '?',
 	ORC = 'O', ZOMBIE = 'Z', SNAKE = 'S',
 	TRAP,
 	LOCKED_DOOR = '%', DOOR = '/',
-	CHEST = 'c'
+	CHEST = 'c',
+	NOISE = '*'
 };
 
 enum class TYPE
@@ -24,7 +24,8 @@ enum class TYPE
 	ENEMY,
 	TRAP,
 	LOCKED_DOOR, DOOR,
-	CHEST
+	CHEST,
+	NOISE
 };
 
 class Tile

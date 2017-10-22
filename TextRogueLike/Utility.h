@@ -4,9 +4,15 @@
 #include <string>
 #include <iostream>
 #include <Windows.h>
+#include <conio.h>
 
 /* Standard error macro for reporting API errors */
 #define PERR(bSuccess, api){if(!(bSuccess)) printf("%s:Error %d from %s \ on line %d\n", __FILE__, GetLastError(), api, __LINE__);}
+
+enum class TEXTCOLOR
+{
+	WHITE, RED, BLUE, GREEN, MAGENTA, YELLOW
+};
 
 namespace Utility
 {
@@ -59,6 +65,11 @@ namespace Utility
 		SetConsoleCursorPosition(hOut, Position);
 	}
 
+	static void clearScreen()
+	{
+		system("cls");
+	}
+
 	static void hideCursor()
 	{
 		HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -73,6 +84,45 @@ namespace Utility
 		for (int i = 0; i < 256; i++)
 		{
 			std::cout << i << ": " << (char)i << "\n";
+		}
+	}
+
+	static void printDelayed(std::string text)
+	{
+		int charPauseTime = 20;
+
+		for (int i = 0; i < text.size(); i++)
+		{
+			std::cout << text[i];
+			std::cout.flush();
+			Sleep(charPauseTime);
+		}
+	}
+
+	static void setTextColor(TEXTCOLOR t)
+	{
+		HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+
+		switch (t)
+		{
+		case TEXTCOLOR::WHITE:
+			SetConsoleTextAttribute(h, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED);
+			break;
+		case TEXTCOLOR::RED:
+			SetConsoleTextAttribute(h, FOREGROUND_RED | FOREGROUND_INTENSITY);
+			break;
+		case TEXTCOLOR::BLUE:
+			SetConsoleTextAttribute(h, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+			break;
+		case TEXTCOLOR::GREEN:
+			SetConsoleTextAttribute(h, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+			break;
+		case TEXTCOLOR::MAGENTA:
+			SetConsoleTextAttribute(h, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+			break;
+		case TEXTCOLOR::YELLOW:
+			SetConsoleTextAttribute(h, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+			break;
 		}
 	}
 

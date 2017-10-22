@@ -6,13 +6,11 @@
 #include "GameEngine.h"
 #include "Utility.h"
 
-template <typename T>
-class LinkedList;
-
 GameEngine::GameEngine()
 {
 }
 
+//these two functions print the level to the screen
 void GameEngine::_drawBox()
 {
 	//create some lines of standard sizes
@@ -66,7 +64,7 @@ void GameEngine::_printLevel()
 	_drawBox();
 
 	//get the cameras view to draw
-	std::vector< std::vector<Tile *> > view = _camera.getCameraView(_currLevel);
+	std::vector< std::vector<Tile *> > view = _camera.getCameraView(_currLevel, _currCameraEffects);
 
 	//offsets to center it
 	int vertOffSet = (BOX_HEIGHT - _camera.getViewHeight()) / 2;
@@ -122,7 +120,6 @@ void GameEngine::_gameLoop()
 			_processInput();
 
 			Utility::setCursor(0, 0);
-			//Utility::clearScreen();
 			_frame++;
 		}
 	}
@@ -139,10 +136,15 @@ void GameEngine::run()
 	//create a new player, load the first level, and go into gameloop!
 	_player = new Player(0, 0);
 
+	//intro is here to properly set the players sprite
+	_intro();
+
 	_loadLevel(filePath, _enemies);
 
 	//_loadLevel(filePath, _enemies);
+	_currCameraEffects = EFFECTS::NONE;
 	_camera.init(_player);
+
 	_gameLoop();
 }
 
@@ -218,11 +220,6 @@ void GameEngine::_updateEnemies()
 	}
 }
 
-Player * GameEngine::getPlayer()
-{
-	return _player;
-}
-
 void GameEngine::_processInput()
 {
 	//not much to say here. finds out what key you pressed and then does something based on which button was pressed.
@@ -241,7 +238,10 @@ void GameEngine::_processInput()
 	case 'd':
 		_movePlayer(DIR::RIGHT);
 		break;
-	
+	case 'p':
+		_pauseGame();
+		break;
+
 	}
 }
 
@@ -375,6 +375,62 @@ void GameEngine::_updateStatuses()
 	Utility::setCursor(1, it->data->position + BOX_HEIGHT + 2);
 	std::string extraBuffer(BOX_WIDTH - it->data->message.size(), ' ');
 	std::cout << it->data->message << extraBuffer;
+}
+
+void GameEngine::_pauseGame()
+{
+	_gamestate = GAMESTATE::PAUSE;
+
+	Utility::clearScreen();
+	std::cout << "Paused";
+
+	char temp;
+
+	do
+	{
+		temp = _getch();
+	} while (temp != 'p');
+
+	_gamestate = GAMESTATE::NORMAL;
+}
+
+void GameEngine::_intro()
+{
+	Utility::hideCursor();
+	Utility::printDelayed("\tWelcome to my ASCII Roguelike game!\n\n");
+
+	Utility::printDelayed("\n\n\n\tTo begin with, pick the sprite for your character!(enter the number, please)\n\n");
+	std::cout << "\t1. " << (char)233 << "\n";
+	std::cout << "\t2. " << "@" << "\n";
+	std::cout << "\t3. " << "Enter custom sprite" << "\n\n";
+	std::cout << "\t>> ";
+
+	int choice;
+	std::cin >> choice;
+
+	switch (choice)
+	{
+	case 1:
+		
+		break;
+	case 2:
+		_player->setSprite('@');
+		break;
+	case 3:
+		Utility::clearScreen();
+		Utility::setTextColor(TEXTCOLOR::RED);
+		std::cout << "\tKeep in mind you may have the same sprite as other things in-game, which may get confusing\n\n";
+		Utility::setTextColor(TEXTCOLOR::WHITE);
+		std::cout << "Enter a character for your sprite\n\n";
+		std::cout << ">> ";
+
+		char choice;
+		std::cin >> choice;
+
+		_player->setSprite(choice);
+		break;
+	}
+	Utility::clearScreen();
 }
 
 GameEngine::~GameEngine()

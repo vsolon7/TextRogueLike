@@ -33,10 +33,6 @@ public:
 	//call this function to start the game!
 	void run();
 
-	//returns the player
-	Player * getPlayer();
-
-
 	~GameEngine();
 private:
 	//the level we are currently on
@@ -59,6 +55,8 @@ private:
 	//the "frame" we are on. more like the turn. the length statuses exist is based off of this.
 	int _frame;
 
+	EFFECTS _currCameraEffects;
+
 
 	
 	//draws a box for the game
@@ -75,6 +73,7 @@ private:
 
 	void _deleteEnemies();
 
+	//loops through the linked list of enemies and makes them move or attack
 	void _updateEnemies();
 	
 	//processes the keyboard input
@@ -88,5 +87,11 @@ private:
 
 	//prints the level to the screen!
 	void _printLevel();
+
+	//pauses the game. I dunno why you'd do this
+	void _pauseGame();
+
+	//do an introduction to the game!
+	void _intro();
 };
 

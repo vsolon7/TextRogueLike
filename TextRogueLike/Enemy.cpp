@@ -183,6 +183,9 @@ void Enemy::attack(Level *l, Player *p, LinkedList<StatusInfo *> &s)
 		//the AI to attack the player
 		//if the square it's trying to move to is occupied by something other than the player,
 		//flip move along the opposite axis (flips moveX and moveY in the function call.
+		//after flipping the axis to move along, decide which direction along it by finding where the player is 
+		//on this NEW axis.
+
 		//prob the coolest code i've written
 
 		switch (movingPositive)

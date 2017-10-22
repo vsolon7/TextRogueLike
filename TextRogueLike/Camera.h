@@ -9,7 +9,7 @@
 
 enum class EFFECTS
 {
-	NONE, NOISE
+	NONE, NOISE = 15
 };
 
 class Camera
@@ -31,5 +31,6 @@ private:
 	Player *_player;
 	int _actualViewWidth, _actualViewHeight;
 	int _apparentViewWidth, _apparentViewHeight;
+	Tile *_noiseTile;
 };
 

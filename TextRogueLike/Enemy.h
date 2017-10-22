@@ -3,6 +3,7 @@
 
 #include "StatusInfo.h"
 #include "Level.h"
+#include "LinkedList.h"
 
 #define SQRT_2 1.414213
 

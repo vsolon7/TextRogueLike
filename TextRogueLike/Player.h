@@ -27,6 +27,7 @@ public:
 	void setCurrPos(int x, int y);
 	int getCurrX();
 	int getCurrY();
+	void setSprite(char c);
 	char getSprite();
 	//END GETTERS AND SETTERS
 
