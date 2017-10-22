@@ -91,7 +91,7 @@ namespace Utility
 	{
 		int charPauseTime = 20;
 
-		for (int i = 0; i < text.size(); i++)
+		for (int i = 0; i != text.size(); i++)
 		{
 			std::cout << text[i];
 			std::cout.flush();
