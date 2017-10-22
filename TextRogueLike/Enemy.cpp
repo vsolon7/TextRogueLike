@@ -168,6 +168,7 @@ void Enemy::attack(Level *l, Player *p, LinkedList<StatusInfo *> &s)
 
 	bool movingHoriz = (xDist > yDist) ? true : false;
 	bool movingPositive = false;
+	bool movingPositive2 = false;
 
 	int moveX = 0;
 	int moveY = 0;
@@ -183,6 +184,7 @@ void Enemy::attack(Level *l, Player *p, LinkedList<StatusInfo *> &s)
 		//if the square it's trying to move to is occupied by something other than the player,
 		//flip move along the opposite axis (flips moveX and moveY in the function call.
 		//prob the coolest code i've written
+
 		switch (movingPositive)
 		{
 		case true:
@@ -191,7 +193,13 @@ void Enemy::attack(Level *l, Player *p, LinkedList<StatusInfo *> &s)
 
 			if (!(tempLvl[moveY + _currY][moveX + _currX]->isEmpty()) && (tempLvl[moveY + _currY][moveX + _currX]->getType() != TYPE::PLAYER))
 			{
-				move(l, p, moveY, moveX, s);
+				bool movingPositive2 = (_currY < playerY) ? true : false;
+
+				if (movingPositive2)
+					move(l, p, moveY, moveX, s);
+				else
+					move(l, p, -moveY, moveX, s);
+				
 			}
 			else
 			{
@@ -204,7 +212,12 @@ void Enemy::attack(Level *l, Player *p, LinkedList<StatusInfo *> &s)
 
 			if (!(tempLvl[moveY + _currY][moveX + _currX]->isEmpty()) && (tempLvl[moveY + _currY][moveX + _currX]->getType() != TYPE::PLAYER))
 			{
-				move(l, p, moveY, moveX, s);
+				bool movingPositive2 = (_currY < playerY) ? true : false;
+
+				if (movingPositive2)
+					move(l, p, -moveY, moveX, s);
+				else
+					move(l, p, moveY, moveX, s);
 			}
 			else
 			{
@@ -226,7 +239,12 @@ void Enemy::attack(Level *l, Player *p, LinkedList<StatusInfo *> &s)
 
 			if (!(tempLvl[moveY + _currY][moveX + _currX]->isEmpty()) && (tempLvl[moveY + _currY][moveX + _currX]->getType() != TYPE::PLAYER))
 			{
-				move(l, p, moveY, moveX, s);
+				bool movingPositive2 = (_currX < playerX) ? true : false;
+
+				if (movingPositive2)
+					move(l, p, moveY, moveX, s);
+				else
+					move(l, p, -moveY, moveX, s);
 			}
 			else
 			{
@@ -239,7 +257,12 @@ void Enemy::attack(Level *l, Player *p, LinkedList<StatusInfo *> &s)
 
 			if (!(tempLvl[moveY + _currY][moveX + _currX]->isEmpty()) && (tempLvl[moveY + _currY][moveX + _currX]->getType() != TYPE::PLAYER))
 			{
-				move(l, p, moveY, moveX, s);
+				bool movingPositive2 = (_currX < playerX) ? true : false;
+
+				if (movingPositive2)
+					move(l, p, -moveY, moveX, s);
+				else
+					move(l, p, moveY, moveX, s);
 			}
 			else
 			{
