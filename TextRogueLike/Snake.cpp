@@ -25,7 +25,7 @@ Snake::Snake(int x, int y, int hp, int d, int a, int view)
 	_currY = y;
 }
 
-void Snake::move(Level *l, Player *p, int x, int y, std::vector<StatusInfo *> &s)
+void Snake::move(Level *l, Player *p, int x, int y, LinkedList<StatusInfo *> &s)
 {
 	std::vector< std::vector<Tile *> > tempLvl = l->getLevelData();
 
@@ -44,7 +44,7 @@ void Snake::move(Level *l, Player *p, int x, int y, std::vector<StatusInfo *> &s
 
 		int intDamage = (int) std::round(tentDamage);
 
-		s.push_back(new StatusInfo(STATUSTYPE::BATTLE, "The snake attacks you for " + std::to_string(intDamage) + " damage!", s.size()));
+		s.pushBack(new StatusInfo(STATUSTYPE::BATTLE, "The snake attacks you for " + std::to_string(intDamage) + " damage!", s.size()));
 
 		p->increaseCurrHP(-intDamage);
 	}

@@ -54,7 +54,7 @@ private:
 	Camera _camera;
 
 	//statuses are little messages that pop up below the game that will say info.
-	std::vector<StatusInfo *> _statuses;
+	LinkedList<StatusInfo *> _statuses;
 
 	//the "frame" we are on. more like the turn. the length statuses exist is based off of this.
 	int _frame;

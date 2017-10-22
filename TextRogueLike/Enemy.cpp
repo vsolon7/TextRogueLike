@@ -110,7 +110,7 @@ double Enemy::getDistance(int x1, int y1, int x2, int y2)
 	return distance;
 }
 
-void Enemy::idleMove(Level *l, Player *p, std::vector<StatusInfo *> &s)
+void Enemy::idleMove(Level *l, Player *p, LinkedList<StatusInfo *> &s)
 {
 	int playerX = p->getCurrX();
 	int playerY = p->getCurrY();
@@ -130,7 +130,7 @@ void Enemy::idleMove(Level *l, Player *p, std::vector<StatusInfo *> &s)
 	}
 }
 
-void Enemy::move(Level *l, Player *p, int x, int y, std::vector<StatusInfo *> &s)
+void Enemy::move(Level *l, Player *p, int x, int y, LinkedList<StatusInfo *> &s)
 {
 	std::vector< std::vector<Tile *> > tempLvl = l->getLevelData();
 
@@ -148,7 +148,7 @@ void Enemy::move(Level *l, Player *p, int x, int y, std::vector<StatusInfo *> &s
 
 		int intDamage = (int)std::round(tentDamage);
 
-		s.push_back(new StatusInfo(STATUSTYPE::BATTLE, "The <enemy> attacks you!", s.size()));
+		s.pushBack(new StatusInfo(STATUSTYPE::BATTLE, "The <enemy> attacks you!", s.size()));
 
 		p->increaseCurrHP(-intDamage);
 	}
@@ -157,7 +157,7 @@ void Enemy::move(Level *l, Player *p, int x, int y, std::vector<StatusInfo *> &s
 		return;
 	}
 }
-void Enemy::attack(Level *l, Player *p, std::vector<StatusInfo *> &s)
+void Enemy::attack(Level *l, Player *p, LinkedList<StatusInfo *> &s)
 {
 	std::vector< std::vector<Tile *> > tempLvl = l->getLevelData();
 

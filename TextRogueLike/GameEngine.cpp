@@ -183,6 +183,8 @@ void GameEngine::_updateEnemies()
 
 	LLNode<Enemy *> *it = _enemies.getBeg();
 
+	//loop thru all the enemies, check if it is dead, if it is delete it to prevent memory leak
+	//if not, then move it!
 	while (it->nextNode != nullptr)
 	{
 		if (it->data->getCurrHP() < 0)
@@ -201,18 +203,19 @@ void GameEngine::_updateEnemies()
 		pos++;
 	}
 
-	//for (int i = 0; i != _enemies.size(); i++)
-	//{
-	//	//if they're dead, kill and delete them.
-	//	if (_enemies[i]->getCurrHP() < 0)
-	//	{
-	//		_currLevel->setTileSprite(_enemies[i]->getCurrX(), _enemies[i]->getCurrY(), (char)TILE::EMPTY, TYPE::EMPTY);
-	//		delete _enemies[i];
-	//		_enemies.erase(_enemies.begin() + i);
-	//	}
-	//	//otherwise move them
-	//	_enemies[i]->idleMove(_currLevel, _player, _statuses);
-	//}
+	//don't forget the last node in the linked list!
+	//basically, just do the same thing one more time 
+	if (it->data->getCurrHP() < 0)
+	{
+		_currLevel->setTileSprite(it->data->getCurrX(), it->data->getCurrY(), (char)TILE::EMPTY, TYPE::EMPTY);
+		delete it->data;
+		it = it->nextNode;
+		_enemies.deleteNode(pos);
+	}
+	else
+	{
+		it->data->idleMove(_currLevel, _player, _statuses);
+	}
 }
 
 Player * GameEngine::getPlayer()
@@ -291,10 +294,10 @@ void GameEngine::_movePlayer(DIR dir)
 		switch (t->getType())
 		{
 		case TYPE::LOCKED_DOOR:
-			_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, "You don't have the key", _statuses.size()));
+			_statuses.pushBack(new StatusInfo(STATUSTYPE::INFO, "You don't have the key", _statuses.size()));
 			break;
 		case TYPE::DOOR:
-			_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, "You open the door", _statuses.size()));
+			_statuses.pushBack(new StatusInfo(STATUSTYPE::INFO, "You open the door", _statuses.size()));
 
 			_currLevel->setTileSprite(playerX, playerY, (char)TILE::EMPTY, TYPE::EMPTY);
 			_player->setCurrPos(playerX + playerMoveX, playerY + playerMoveY);
@@ -309,7 +312,7 @@ void GameEngine::_movePlayer(DIR dir)
 
 			e->increaseCurrHP(-intDamage);
 
-			_statuses.push_back(new StatusInfo(STATUSTYPE::INFO, "You attack for " + std::to_string(intDamage) + " damage", _statuses.size()));
+			_statuses.pushBack(new StatusInfo(STATUSTYPE::INFO, "You attack for " + std::to_string(intDamage) + " damage", _statuses.size()));
 			break;
 		}
 	}
@@ -323,45 +326,55 @@ void GameEngine::_updateStatuses()
 	if (_statuses.size() == 0)
 		return;
 
-	//if there are more than 7 statuses
+	LLNode<StatusInfo *> *it = _statuses.getBeg();
+	
 	if (_statuses.size() > 7)
 	{
 		//this is needed so if you get a huge flood of them, there will always only be 7.
 		//O(n^2) tho :(, however the second for loop just shifts a position down by one, not that computationally taxing
-		for (unsigned int i = 0; i < _statuses.size(); i++)
+		while (it->nextNode != nullptr)
 		{
 			if (_statuses.size() <= 7)
 				break;
 
 			//set the cursor to the beginning of the status
-			Utility::setCursor(1, _statuses[0]->position + BOX_HEIGHT + 2);
+			Utility::setCursor(1, _statuses.getBeg()->data->position + BOX_HEIGHT + 2);
 
 			//print out a bunch of spaces to "clear" the message
 			std::string spaces(BOX_WIDTH, ' ');
 			std::cout << spaces;
 
-			//delete it (it was allocated on the heap)
-			delete _statuses[0];
+			//delete the statusinfo data (it was allocated on the heap)
+			delete _statuses.getBeg()->data;
 
-			//erase it from the vector
-			_statuses.erase(_statuses.begin());
+			//erase it from the LL
+			_statuses.deleteNode(0);
 
-
-			for (unsigned int i = 0; i < _statuses.size(); i++)
-				_statuses[i]->position--;
+			LLNode<StatusInfo *> *it2 = _statuses.getBeg();
+			while (it2->nextNode != nullptr)
+			{
+				it2->data->position--;
+				it2 = it2->nextNode;
+			}
+			it2->data->position--;
 		}
 	}
 
-	//loop through all the statuses
-	for (unsigned int i = 0; i < _statuses.size(); i++)
+	it = _statuses.getBeg();
+
+	//print the node
+	while (it->nextNode != nullptr)
 	{
-		Utility::setCursor(1, _statuses[i]->position + BOX_HEIGHT + 2);
-
-		std::string extraBuffer(BOX_WIDTH - _statuses[i]->message.size(), ' ');
-
-		//prints out all the statuses
-		std::cout << _statuses[i]->message << extraBuffer;
+		Utility::setCursor(1, it->data->position + BOX_HEIGHT + 2);
+		std::string extraBuffer(BOX_WIDTH - it->data->message.size(), ' ');
+		std::cout << it->data->message << extraBuffer;
+		it = it->nextNode;
 	}
+
+	//don't forget the last node in the linked list!
+	Utility::setCursor(1, it->data->position + BOX_HEIGHT + 2);
+	std::string extraBuffer(BOX_WIDTH - it->data->message.size(), ' ');
+	std::cout << it->data->message << extraBuffer;
 }
 
 GameEngine::~GameEngine()

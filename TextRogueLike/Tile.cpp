@@ -42,7 +42,7 @@ void Tile::setSprite(char c, TYPE t)
 	//sets the tiles sprite to the parameter
 	//if it is being set to EMPTY_TILE, set the tile as empty
 	_sprite = c;
-	if (c == (char)TILE::EMPTY)
+	if (t == TYPE::EMPTY)
 	{
 		_enemyOnTile = nullptr;
 		_empty = true;

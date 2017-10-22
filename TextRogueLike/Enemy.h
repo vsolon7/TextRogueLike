@@ -38,9 +38,9 @@ public:
 	void setViewDistance(int v);
 	//END GETTERS AND SETTERS
 
-	virtual void idleMove(Level *l, Player *p, std::vector<StatusInfo *> &s);
-	virtual void move(Level *l, Player *p, int x, int y, std::vector<StatusInfo *> &s);
-	virtual void attack(Level *l, Player *p, std::vector<StatusInfo *> &s);
+	virtual void idleMove(Level *l, Player *p, LinkedList<StatusInfo *> &s);
+	virtual void move(Level *l, Player *p, int x, int y, LinkedList<StatusInfo *> &s);
+	virtual void attack(Level *l, Player *p, LinkedList<StatusInfo *> &s);
 
 	double getDistance(int x1, int y1, int x2, int y2);
 protected:

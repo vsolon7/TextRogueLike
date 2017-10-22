@@ -15,7 +15,7 @@ public:
 	Snake(int x, int y);
 	Snake(int x, int y, int hp, int d, int a, int view);
 
-	void move(Level *l, Player *p, int x, int y, std::vector<StatusInfo *> &s);
+	void move(Level *l, Player *p, int x, int y, LinkedList<StatusInfo *> &s);
 
 	~Snake();
 };
