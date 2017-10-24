@@ -1,5 +1,12 @@
 #include "Player.h"
 
+//REMEMBER TO DELETE PLAYER ITEMS
+//REMEMBER TO DELETE PLAYER ITEMS
+//REMEMBER TO DELETE PLAYER ITEMS
+//REMEMBER TO DELETE PLAYER ITEMS
+//REMEMBER TO DELETE PLAYER ITEMS
+//REMEMBER TO DELETE PLAYER ITEMS
+
 Player::Player(int x, int y)
 {
 	_maxHP = PLAYER_DEFAULT_HP;
@@ -9,6 +16,22 @@ Player::Player(int x, int y)
 	_currX = x;
 	_currY = y;
 	_sprite = PLAYER_DEFAULT_SPRITE;
+
+	for (int i = 0; i < 4; i++)
+	{
+		inventory.push_back({ nullptr,nullptr,nullptr,nullptr });
+	}
+
+	//for testing
+	addItemToInv(new Item('A', 12, 400, -5, "The letter", ITEMTYPE::WEAPON));
+	addItemToInv(new Item('C', 0, 0, 0, "The other letter", ITEMTYPE::WEAPON));
+	//for testing
+
+	for (int i = 0; i < 6; i++)
+	{
+		equipped.push_back(new Item('O', 0, 0, 0, "None", ITEMTYPE::WEAPON));
+		equipped.push_back(new Item('O', 0, 0, 0, "None", ITEMTYPE::ARMOR));
+	}
 }
 
 int Player::getMaxHP()
@@ -83,6 +106,22 @@ void Player::setSprite(char c)
 char Player::getSprite()
 {
 	return _sprite;
+}
+
+int Player::addItemToInv(Item *itm)
+{
+	for (int y = 0; y < inventory.size(); y++)
+	{
+		for (int x = 0; x < inventory[y].size(); x++)
+		{
+			if (inventory[y][x] == nullptr)
+			{
+				inventory[y][x] = itm;
+				return 0;
+			}
+		}
+	}
+	return 1;
 }
 
 Player::~Player()

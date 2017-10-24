@@ -26,6 +26,7 @@ namespace Utility
 	static unsigned char lineOutRight = 204;
 	static unsigned char lineOutTop = 202;
 	static unsigned char lineOutBot = 203;
+	static unsigned char lineOutAll = 206;
 
 	static std::mt19937 randEngine;
 

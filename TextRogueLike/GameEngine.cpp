@@ -24,15 +24,34 @@ void GameEngine::_drawBox()
 	{
 
 		//draw HP BOX
-		if (x < HP_HEIGHT)
+
+		if (x == 6)
 		{
-			Utility::setCursor(BOX_WIDTH + HP_WIDTH + 2, x + 1);
-			std::cout << Utility::straightVert;
+			std::cout << "      INVENTORY";
 		}
+
+		if (x % 4 == 0 && x > 7)
+		{
+			std::cout << "  +   +   +   +   +  ";
+		}
+
+		if (x == BOX_HEIGHT - 3)
+		{
+			std::cout << hpLine;
+		}
+
+		if (x == BOX_HEIGHT - 2)
+		{
+			std::cout << "      EQUIPPED";
+		}
+
+		Utility::setCursor(BOX_WIDTH + HP_WIDTH + 2, x + 1);
+		std::cout << Utility::straightVert;
+
 		if (x == HP_HEIGHT + 1)
 		{
 			Utility::setCursor(BOX_WIDTH + 1, x);
-			std::cout << Utility::lineOutRight << hpLine << Utility::botRightCorn;
+			std::cout << Utility::lineOutRight << hpLine << Utility::lineOutLeft;
 		}
 
 		//draw the regular box
@@ -42,15 +61,17 @@ void GameEngine::_drawBox()
 		std::cout << Utility::straightVert;
 	}
 	Utility::setCursor(0, BOX_HEIGHT + 1);
-	std::cout << Utility::lineOutRight << line << Utility::lineOutLeft << std::endl;
+	std::cout << Utility::lineOutRight << line << Utility::lineOutAll << hpLine << Utility::botRightCorn << std::endl;
 
 	//draw the status box
 	for (int x = 0; x != STATUS_HEIGHT; x++)
 	{
+		
 		Utility::setCursor(0, x + BOX_HEIGHT + 2);
 		std::cout << Utility::straightVert;
 		Utility::setCursor(BOX_WIDTH + 1, x + BOX_HEIGHT + 2);
 		std::cout << Utility::straightVert;
+		
 	}
 	Utility::setCursor(0, BOX_HEIGHT + STATUS_HEIGHT + 2);
 	std::cout << Utility::botLeftCorn << line << Utility::botRightCorn << std::endl;
@@ -93,7 +114,7 @@ void GameEngine::_printLevel()
 
 	//print out some players stats
 	Utility::setCursor(BOX_WIDTH + 2, 1);
-	std::cout << " HP: " << _player->getCurrHP() << " / " << _player->getMaxHP();
+	std::cout << " HP: " << _player->getCurrHP() << " / " << _player->getMaxHP() << "    ";
 	Utility::setCursor(BOX_WIDTH + 2, 2);
 	std::cout << " DAMAGE: " << _player->getDamage();
 	Utility::setCursor(BOX_WIDTH + 2, 3);
@@ -103,6 +124,20 @@ void GameEngine::_printLevel()
 
 	Utility::setCursor(horOffSet, vertOffSet + _camera.getViewHeight() + 1);
 	std::cout << Utility::botLeftCorn << line << Utility::botRightCorn;
+
+	//print player inventory
+	std::vector<std::vector<Item *>> tempInv = _player->inventory;
+
+	for (int y = 0; y < tempInv.size(); y++)
+	{
+		for (int x = 0; x < tempInv[y].size(); x++)
+		{
+			Utility::setCursor(BOX_WIDTH + 6 + (x * 4), y * 4 + 10);
+
+			if(tempInv[y][x] != nullptr)
+				std::cout << tempInv[y][x]->sprite;
+		}
+	}
 }
 
 void GameEngine::_gameLoop()
@@ -137,7 +172,7 @@ void GameEngine::run()
 	_player = new Player(0, 0);
 
 	//intro is here to properly set the players sprite
-	_intro();
+	//_intro();
 
 	_loadLevel(filePath, _enemies);
 
@@ -240,6 +275,9 @@ void GameEngine::_processInput()
 		break;
 	case 'p':
 		_pauseGame();
+		break;
+	case 'i':
+		_inventorySelection();
 		break;
 
 	}
@@ -392,6 +430,79 @@ void GameEngine::_pauseGame()
 	} while (temp != 'p');
 
 	_gamestate = GAMESTATE::NORMAL;
+}
+
+void GameEngine::_inventorySelection()
+{
+	bool exit = false;
+
+	int posX = 0;
+	int posY = 0;
+	int prevX = 0;
+	int prevY = 0;
+
+	Utility::setCursor(BOX_WIDTH + 6 + (posX * 4), posY * 4 + 12);
+	std::cout << "^";
+
+	while (!exit)
+	{
+		char c = _getch();
+
+		switch (c)
+		{
+		case 'w':
+			if (posY > 0)
+			{
+				prevY = posY;
+				prevX = posX;
+				posY--;
+			}
+			break;
+		case 'a':
+			if (posX > 0)
+			{
+				prevX = posX;
+				prevY = posY;
+				posX--;
+			}
+			break;
+		case 's':
+			if (posY < 3)
+			{
+				prevY = posY;
+				prevX = posX;
+				posY++;
+			}
+			break;
+		case 'd':
+			if (posX < 3)
+			{
+				prevX = posX;
+				prevY = posY;
+				posX++;
+			}
+			break;
+		case '\\':
+		{
+			Utility::clearScreen();
+			Item *tempItem = _player->inventory[posY][posX];
+
+			std::cout << "\tItem Name:: \"" << tempItem->name << "\"\n\n";
+			printf_s("\tDamage:: %d\n\tArmor::  %d\n\tHP::     %d\n", tempItem->damageIncrease, tempItem->armorIncrease, tempItem->hpIncrease);
+			_getch();
+		}
+			break;
+		case 'i':
+			exit = true;
+			break;
+		}
+		//clear the ^ from the last move
+		Utility::setCursor(BOX_WIDTH + 6 + (prevX * 4), (prevY * 4) + 12);
+		std::cout << " ";
+
+		Utility::setCursor(BOX_WIDTH + 6 + (posX * 4), (posY * 4) + 12);
+		std::cout << "^";
+	}
 }
 
 void GameEngine::_intro()

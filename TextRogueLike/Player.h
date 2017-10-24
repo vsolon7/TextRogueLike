@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Item.h"
+#include <vector>
+#include <memory>
+
 #define PLAYER_DEFAULT_DAMAGE 5
 #define PLAYER_DEFAULT_HP 40
 #define PLAYER_DEFAULT_ARMOR 1
@@ -29,9 +33,15 @@ public:
 	int getCurrY();
 	void setSprite(char c);
 	char getSprite();
+
+	int addItemToInv(Item *itm);
 	//END GETTERS AND SETTERS
 
+	std::vector< std::vector<Item *> > inventory;
+	std::vector<Item *> equipped;
+
 private:
+
 	int _currHP;
 	int _maxHP;
 	int _damage;

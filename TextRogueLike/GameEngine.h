@@ -11,7 +11,7 @@
 
 #define BOX_WIDTH 60
 #define BOX_HEIGHT 28
-#define HP_WIDTH 20
+#define HP_WIDTH 21
 #define HP_HEIGHT 4
 #define STATUS_HEIGHT 7
 
@@ -90,6 +90,9 @@ private:
 
 	//pauses the game. I dunno why you'd do this
 	void _pauseGame();
+
+	//lets you pick an item from your inventory
+	void _inventorySelection();
 
 	//do an introduction to the game!
 	void _intro();
